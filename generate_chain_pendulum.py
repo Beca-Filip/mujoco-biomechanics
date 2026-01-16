@@ -50,6 +50,12 @@ def main():
         description="Generate an n-link chain pendulum MuJoCo XML model."
     )
     parser.add_argument(
+        "positional_argument",
+        type=str,
+        default="default_positional_argument_value",
+        help="This is a required positional argument, and goes before optional flagged arguments."
+    )
+    parser.add_argument(
         "-o", "--output",
         default="pendulum_chain.xml",
         help="Output XML filename (default: pendulum_chain.xml)"
@@ -65,7 +71,8 @@ def main():
 
     if args.num_links < 1:
         parser.error("Number of links must be at least 1")
-
+    
+    print(args.positional_argument)
     generate_chain_pendulum(filename=args.output, num_links=args.num_links)
 
 
