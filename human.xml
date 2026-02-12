@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mujoco model="human">
+  <worldbody>
+    <geom type="plane" size="1 1 .1" rgba=".8 .8 .8 1" />
+    <light diffuse=".8 .8 .8" pos="0 0 3" dir="0 0 -1" />
+    <body name="thorax" pos="0 0 1.5" euler="90 0 0">
+      <joint type="free" pos="0 0 0" />
+      <geom type="capsule" size="0.1 0.17544871794871794" pos="0 -0.1 0" euler="0 0 0" rgba="0.9 0.4 0.6 1" />
+      <body name="head" pos="0 0 0">
+        <joint name="head_x" type="hinge" axis="1 0 0" pos="0 0 -0.13240384615384615" />
+        <joint name="head_y" type="hinge" axis="0 1 0" pos="0 0 -0.13240384615384615" />
+        <joint name="head_z" type="hinge" axis="0 0 1" pos="0 0 -0.13240384615384615" />
+        <geom type="sphere" size="0.13240384615384615" pos="0 0.13240384615384615 0" euler="0 0 0" rgba="0.9 0.4 0.6 1" />
+      </body>
+      <body name="abdomen" pos="0 -0.3508974358974359 0">
+        <joint name="abdomen_x" type="hinge" axis="1 0 0" pos="0 0 0" />
+        <joint name="abdomen_y" type="hinge" axis="0 1 0" pos="0 0 0" />
+        <joint name="abdomen_z" type="hinge" axis="0 0 1" pos="0 0 0" />
+        <geom type="capsule" size="0.1 0.06810897435897435" pos="0 -0.1 0" euler="0 0 0" rgba="0.9 0.4 0.6 1" />
+      </body>
+    </body>
+  </worldbody>
+  <option gravity="0 0 -9.81" />
+</mujoco>
