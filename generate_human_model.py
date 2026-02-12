@@ -2,7 +2,7 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 import argparse
 
-def generate_human_model(filename, mass, height, sex):
+def generate_human_model(filename : str, mass : float, height : float, sex : str):
 
     k = 1  # scaling coefficient - will be changed depending on subject height
     maleHeight=172
@@ -70,7 +70,7 @@ def generate_human_model(filename, mass, height, sex):
     print("y ", posMCy_dict)
     print("z ", posMCz_dict)
 
-    mujoco = ET.Element("mujoco", model="simple_human")
+    mujoco = ET.Element("mujoco", model=filename.replace(".xml", ""))
     worldbody = ET.SubElement(mujoco, "worldbody")
     ET.SubElement(worldbody, "geom", type="plane", size="1 1 .1", rgba=".8 .8 .8 1")
     ET.SubElement(worldbody, "light", diffuse=".8 .8 .8", pos="0 0 3", dir="0 0 -1")
@@ -203,8 +203,8 @@ if __name__ == "__main__":
     
     parser.add_argument(
         "-o", "--output",
-        default="simple_human.xml",
-        help="Output XML filename (default: simple_human.xml)"
+        default="human.xml",
+        help="Output XML filename (default: human.xml)"
     )
 
     parser.add_argument(
