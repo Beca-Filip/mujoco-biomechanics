@@ -78,9 +78,10 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
 
 
     # Thorax as central segment
-    thorax = ET.SubElement(worldbody, "body", name="thorax", pos="0 0 1.5", euler="90 0 0")
+    thorax = ET.SubElement(worldbody, "body", name="thorax", pos=f"0 0 {height*0.01-lengths_dict['Head with Neck'] + 0.2}", euler="90 0 0")
     ET.SubElement(thorax, "joint", type="free", pos="0 0 0")
-    ET.SubElement(thorax, "geom", type="capsule", size=f"0.1 {lengths_dict['Thorax']/2}", pos=f"0 -0.1 0", euler="0 0 0", rgba=rgba_in)
+    ET.SubElement(thorax, "geom", type="capsule", size=f"{0.55*lengths_dict['Thorax']/2} {height*0.07*0.01}", pos=f"0 -{0.55*lengths_dict['Thorax']/2} 0", euler="0 0 0", rgba=rgba_in)
+    ET.SubElement(thorax, "geom", type="capsule", size=f"{0.45*lengths_dict['Thorax']/2} {height*0.07*0.01}", pos=f"0 -{0.55*lengths_dict['Thorax']+0.45*lengths_dict['Thorax']/2} 0", euler="0 0 0", rgba=rgba_in)
     #ET.SubElement(thorax, "inertial", mass=str(mass_dict["Thorax"]), pos=f"{com_pos_x_dict['Thorax']} {com_pos_y_dict['Thorax']} {com_pos_z_dict['Thorax']}")
 
     # Head
@@ -95,38 +96,38 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(abdomen, "joint", name="abdomen_x", type="hinge", axis="1 0 0", pos="0 0 0", range="-12.5 12.5")
     ET.SubElement(abdomen, "joint", name="abdomen_y", type="hinge", axis="0 1 0", pos="0 0 0", range="-15 15")
     ET.SubElement(abdomen, "joint", name="abdomen_z", type="hinge", axis="0 0 1", pos="0 0 0", range="-25 12.5")
-    ET.SubElement(abdomen, "geom", type="capsule", size=f"0.1 {lengths_dict['Abdomen']/2}", pos=f"0 -0.1 0", euler="0 0 0", rgba=rgba_in)
+    ET.SubElement(abdomen, "geom", type="capsule", size=f"{lengths_dict['Abdomen']/2} {height*0.01*0.067}", pos=f"0 -0.1 0", euler="0 0 0", rgba=rgba_in)
 
     # Pelvis
     pelvis = ET.SubElement(abdomen, "body", name="pelvis", pos=f"0 {-lengths_dict['Abdomen']} 0")
     ET.SubElement(pelvis, "joint", name="pelvis_x", type="hinge", axis="1 0 0", pos="0 0 0", range="-12.5 12.5")
     ET.SubElement(pelvis, "joint", name="pelvis_y", type="hinge", axis="0 1 0", pos="0 0 0", range="-15 15")
     ET.SubElement(pelvis, "joint", name="pelvis_z", type="hinge", axis="0 0 1", pos="0 0 0", range="-25 12.5")
-    ET.SubElement(pelvis, "geom", type="capsule", size=f"0.1 {lengths_dict['Pelvis']/2}", pos=f"0 -0.1 0", euler="0 0 0", rgba=rgba_in)
+    ET.SubElement(pelvis, "geom", type="capsule", size=f"{lengths_dict['Pelvis']/2} {height*0.01*0.085}", pos=f"0 -0.1 0", euler="0 0 0", rgba=rgba_in)
 
     # Left thigh
-    left_thigh = ET.SubElement(pelvis, "body", name="left_thigh", pos=f"0 {-lengths_dict['Pelvis']} {-lengths_dict['Pelvis']}")
+    left_thigh = ET.SubElement(pelvis, "body", name="left_thigh", pos=f"0 {-lengths_dict['Pelvis']} {-height*0.01*0.09 + height*0.01*0.02}")
     ET.SubElement(left_thigh, "joint", name="left_hip_x", type="hinge", axis="1 0 0", pos="0 0 0", range="-20 40")
     ET.SubElement(left_thigh, "joint", name="left_hip_y", type="hinge", axis="0 1 0", pos="0 0 0", range="-40 50")
     ET.SubElement(left_thigh, "joint", name="left_hip_z", type="hinge", axis="0 0 1", pos="0 0 0", range="-30 100")
-    ET.SubElement(left_thigh, "geom", type="capsule", size=f"0.04 {lengths_dict['Thigh']/2}", pos = f"0 {-lengths_dict['Thigh']/2} 0", euler="-90 0 0", rgba=rgba_in)
+    ET.SubElement(left_thigh, "geom", type="capsule", size=f"{height*0.01*0.04} {lengths_dict['Thigh']/2}", pos = f"0 {-lengths_dict['Thigh']/2 - height*0.01*0.02} 0", euler="-90 0 0", rgba=rgba_in)
 
     # Right thigh
-    right_thigh = ET.SubElement(pelvis, "body", name="right_thigh", pos=f"0 {-lengths_dict['Pelvis']} {lengths_dict['Pelvis']}")
+    right_thigh = ET.SubElement(pelvis, "body", name="right_thigh", pos=f"0 {-lengths_dict['Pelvis']} {height*0.01*0.09 - height*0.01*0.02}")
     ET.SubElement(right_thigh, "joint", name="right_hip_x", type="hinge", axis="1 0 0", pos="0 0 0", range="-40 20")
     ET.SubElement(right_thigh, "joint", name="right_hip_y", type="hinge", axis="0 1 0", pos="0 0 0", range="-40 50")
     ET.SubElement(right_thigh, "joint", name="right_hip_z", type="hinge", axis="0 0 1", pos="0 0 0", range="-30 100")
-    ET.SubElement(right_thigh, "geom", type="capsule", size=f"0.04 {lengths_dict['Thigh']/2}", pos = f"0 {-lengths_dict['Thigh']/2} 0", euler="-90 0 0", rgba=rgba_in)
+    ET.SubElement(right_thigh, "geom", type="capsule", size=f"{height*0.01*0.04} {lengths_dict['Thigh']/2}", pos = f"0 {-lengths_dict['Thigh']/2 - height*0.01*0.02} 0", euler="-90 0 0", rgba=rgba_in)
 
     # Left shank
     left_shank = ET.SubElement(left_thigh, "body", name="left_shank", pos=f"0 {-lengths_dict['Thigh']} 0")
     ET.SubElement(left_shank, "joint", name="left_knee_z", type="hinge", axis="0 0 1", pos="0 0 0", range="-150 0")
-    ET.SubElement(left_shank, "geom", type="capsule", size=f"0.035 {lengths_dict['Shank']/2}", pos = f"0 {-lengths_dict['Shank']/2} 0", euler="-90 0 0", rgba=rgba_in)
+    ET.SubElement(left_shank, "geom", type="capsule", size=f"{height*0.01*0.03} {lengths_dict['Shank']/2}", pos = f"0 {-lengths_dict['Shank']/2} 0", euler="-90 0 0", rgba=rgba_in)
 
     # Right shank
     right_shank = ET.SubElement(right_thigh, "body", name="right_shank", pos=f"0 {-lengths_dict['Thigh']} 0")
     ET.SubElement(right_shank, "joint", name="right_knee_z", type="hinge", axis="0 0 1", pos="0 0 0", range="-150 0")
-    ET.SubElement(right_shank, "geom", type="capsule", size=f"0.035 {lengths_dict['Shank']/2}", pos = f"0 {-lengths_dict['Shank']/2} 0", euler="-90 0 0", rgba=rgba_in)
+    ET.SubElement(right_shank, "geom", type="capsule", size=f"{height*0.01*0.03} {lengths_dict['Shank']/2}", pos = f"0 {-lengths_dict['Shank']/2} 0", euler="-90 0 0", rgba=rgba_in)
 
     # Left foot
     left_foot = ET.SubElement(left_shank, "body", name="left_foot", pos=f"0 {-lengths_dict['Shank']} 0")
@@ -141,18 +142,18 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(right_foot, "geom", type="capsule", size=f"0.05 {lengths_dict['Foot']/2}", pos = f"{lengths_dict['Foot']/2} 0 0", euler="0 90 0", rgba=rgba_in)
 
     # Left upper arm
-    left_upper_arm = ET.SubElement(thorax, "body", name="left_upper_arm", pos=f"0 0 -{lengths_dict['Upper Arm']}")
-    ET.SubElement(left_upper_arm, "joint", name="left_shoulder_x", type="hinge", axis="1 0 0", pos="0 0 0", range="-50 180")
-    ET.SubElement(left_upper_arm, "joint", name="left_shoulder_y", type="hinge", axis="0 1 0", pos="0 0 0", range="-90 90")
-    ET.SubElement(left_upper_arm, "joint", name="left_shoulder_z", type="hinge", axis="0 0 1", pos="0 0 0", range="-50 180")
-    ET.SubElement(left_upper_arm, "geom", type="capsule", size=f"0.04 {lengths_dict['Upper Arm']/2}", pos = f"0 {-lengths_dict['Upper Arm']/2} 0", euler="-90 0 0", rgba=rgba_in)
+    left_upper_arm = ET.SubElement(thorax, "body", name="left_upper_arm", pos=f"0 -{0.55*lengths_dict['Thorax']/2} -{height*0.01*0.07 + height*0.01*0.0208 + 0.55*lengths_dict['Thorax']/2}")
+    ET.SubElement(left_upper_arm, "joint", name="left_shoulder_x", type="hinge", axis="1 0 0", pos=f"0 {height*0.01*0.0208} 0", range="-50 180")
+    ET.SubElement(left_upper_arm, "joint", name="left_shoulder_y", type="hinge", axis="0 1 0", pos=f"0 {height*0.01*0.0208} 0", range="-90 90")
+    ET.SubElement(left_upper_arm, "joint", name="left_shoulder_z", type="hinge", axis="0 0 1", pos=f"0 {height*0.01*0.0208} 0", range="-50 180")
+    ET.SubElement(left_upper_arm, "geom", type="capsule", size=f"{height*0.01*0.0208} {lengths_dict['Upper Arm']/2}", pos = f"0 {-lengths_dict['Upper Arm']/2 + height*0.01*0.0208} 0", euler="-90 0 0", rgba=rgba_in)
 
     # Right upper arm
-    right_upper_arm = ET.SubElement(thorax, "body", name="right_upper_arm", pos=f"0 0 {lengths_dict['Upper Arm']}")
-    ET.SubElement(right_upper_arm, "joint", name="right_shoulder_x", type="hinge", axis="1 0 0", pos="0 0 0", range="-50 180")
-    ET.SubElement(right_upper_arm, "joint", name="right_shoulder_y", type="hinge", axis="0 1 0", pos="0 0 0", range="-90 90")
-    ET.SubElement(right_upper_arm, "joint", name="right_shoulder_z", type="hinge", axis="0 0 1", pos="0 0 0", range="-50 180")
-    ET.SubElement(right_upper_arm, "geom", type="capsule", size=f"0.04 {lengths_dict['Upper Arm']/2}", pos = f"0 {-lengths_dict['Upper Arm']/2} 0", euler="-90 0 0", rgba=rgba_in)
+    right_upper_arm = ET.SubElement(thorax, "body", name="right_upper_arm", pos=f"0 -{0.55*lengths_dict['Thorax']/2} {height*0.01*0.07 + height*0.01*0.0208 + 0.55*lengths_dict['Thorax']/2}")
+    ET.SubElement(right_upper_arm, "joint", name="right_shoulder_x", type="hinge", axis="1 0 0", pos=f"0 {height*0.01*0.0208} 0", range="-50 180")
+    ET.SubElement(right_upper_arm, "joint", name="right_shoulder_y", type="hinge", axis="0 1 0", pos=f"0 {height*0.01*0.0208} 0", range="-90 90")
+    ET.SubElement(right_upper_arm, "joint", name="right_shoulder_z", type="hinge", axis="0 0 1", pos=f"0 {height*0.01*0.0208} 0", range="-50 180")
+    ET.SubElement(right_upper_arm, "geom", type="capsule", size=f"{height*0.01*0.0208} {lengths_dict['Upper Arm']/2}", pos = f"0 {-lengths_dict['Upper Arm']/2 + height*0.01*0.0208} 0", euler="-90 0 0", rgba=rgba_in)
 
     # Left forearm
     left_forearm = ET.SubElement(left_upper_arm, "body", name="left_forearm", pos=f"0 {-lengths_dict['Upper Arm']} 0")
