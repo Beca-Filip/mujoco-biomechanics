@@ -42,7 +42,7 @@ def main():
     parser.add_argument(
         "--cam-azimuth", "-ca",
         type=float,
-        default=0.,
+        default=180.,
         help="Azimuth of the viewer's camera (default: 0 degrees)"
     )
     parser.add_argument(
