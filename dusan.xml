@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mujoco model="dusan">
+  <worldbody>
+    <geom type="plane" size="1 1 .1" rgba=".8 .8 .8 1" />
+    <light diffuse=".8 .8 .8" pos="0 0 3" dir="0 0 -1" />
+    <body name="thorax" pos="0 0 1.643728813559322" euler="90 0 0">
+      <joint type="free" pos="0 0 0" />
+      <geom type="capsule" size="0.12265536723163843 0.10447740112994347" pos="0 -0.12265536723163843 0" euler="0 0 0" rgba="0.2 0.4 0.8 1" />
+      <geom type="capsule" size="0.12265536723163843 0.10447740112994347" pos="0 -0.3679661016949153 0" euler="0 0 0" rgba="0.2 0.4 0.8 1" />
+      <body name="head" pos="0 0 0">
+        <joint name="head_x" type="hinge" axis="1 0 0" pos="0 0 0" range="-45 45" />
+        <joint name="head_y" type="hinge" axis="0 1 0" pos="0 0 0" range="-80 80" />
+        <joint name="head_z" type="hinge" axis="0 0 1" pos="0 0 0" range="-60 75" />
+        <geom type="sphere" size="0.15313559322033898" pos="0 0.15313559322033898 0" euler="0 0 0" rgba="0.2 0.4 0.8 1" />
+      </body>
+      <body name="abdomen" pos="0 -0.3679661016949153 0">
+        <joint name="abdomen_x" type="hinge" axis="1 0 0" pos="0 0 0" range="-12.5 12.5" />
+        <joint name="abdomen_y" type="hinge" axis="0 1 0" pos="0 0 0" range="-15 15" />
+        <joint name="abdomen_z" type="hinge" axis="0 0 1" pos="0 0 0" range="-25 12.5" />
+        <geom type="capsule" size="0.08317796610169491 0.1104449152542373" pos="0 -0.16635593220338982 0" euler="0 0 0" rgba="0.2 0.4 0.8 1" />
+        <body name="pelvis" pos="0 -0.16635593220338982 0">
+          <joint name="pelvis_x" type="hinge" axis="1 0 0" pos="0 0 0" range="-12.5 12.5" />
+          <joint name="pelvis_y" type="hinge" axis="0 1 0" pos="0 0 0" range="-15 15" />
+          <joint name="pelvis_z" type="hinge" axis="0 0 1" pos="0 0 0" range="-25 12.5" />
+          <geom type="capsule" size="0.05122881355932203 0.12917372881355935" pos="0 -0.10245762711864406 0" euler="0 0 0" rgba="0.2 0.4 0.8 1" />
+          <body name="left_thigh" pos="0 -0.10245762711864406 -0.13649999999999998">
+            <joint name="left_hip_x" type="hinge" axis="1 0 0" pos="0 0 0" range="-20 40" />
+            <joint name="left_hip_y" type="hinge" axis="0 1 0" pos="0 0 0" range="-40 50" />
+            <joint name="left_hip_z" type="hinge" axis="0 0 1" pos="0 0 0" range="-30 100" />
+            <geom type="capsule" size="0.08978813559322034 0.19307203389830507" pos="0 -0.23796610169491525 0" euler="-90 0 0" rgba="0.2 0.4 0.8 1" />
+            <body name="left_shank" pos="0 -0.4759322033898305 0">
+              <joint name="left_knee_z" type="hinge" axis="0 0 1" pos="0 0 0" range="-150 0" />
+              <geom type="capsule" size="0.056737288135593214 0.21014830508474577" pos="0 -0.23851694915254237 0" euler="-90 0 0" rgba="0.2 0.4 0.8 1" />
+              <body name="left_foot" pos="0 -0.47703389830508475 0">
+                <joint name="left_ankle_y" type="hinge" axis="0 1 0" pos="0 0 0" range="-30 30" />
+                <joint name="left_ankle_z" type="hinge" axis="0 0 1" pos="0 0 0" range="-20 30" />
+                <geom type="capsule" size="0.05563559322033899 0.04875" pos="0.07656779661016949 0 0" euler="0 90 0" rgba="0.2 0.4 0.8 1" />
+              </body>
+            </body>
+          </body>
+          <body name="right_thigh" pos="0 -0.10245762711864406 0.13649999999999998">
+            <joint name="right_hip_x" type="hinge" axis="1 0 0" pos="0 0 0" range="-40 20" />
+            <joint name="right_hip_y" type="hinge" axis="0 1 0" pos="0 0 0" range="-40 50" />
+            <joint name="right_hip_z" type="hinge" axis="0 0 1" pos="0 0 0" range="-30 100" />
+            <geom type="capsule" size="0.08978813559322034 0.19307203389830507" pos="0 -0.23796610169491525 0" euler="-90 0 0" rgba="0.2 0.4 0.8 1" />
+            <body name="right_shank" pos="0 -0.4759322033898305 0">
+              <joint name="right_knee_z" type="hinge" axis="0 0 1" pos="0 0 0" range="-150 0" />
+              <geom type="capsule" size="0.056737288135593214 0.21014830508474577" pos="0 -0.23851694915254237 0" euler="-90 0 0" rgba="0.2 0.4 0.8 1" />
+              <body name="right_foot" pos="0 -0.47703389830508475 0">
+                <joint name="right_ankle_y" type="hinge" axis="0 1 0" pos="0 0 0" range="-30 30" />
+                <joint name="right_ankle_z" type="hinge" axis="0 0 1" pos="0 0 0" range="-20 30" />
+                <geom type="capsule" size="0.05563559322033899 0.04875" pos="0.07656779661016949 0 0" euler="0 90 0" rgba="0.2 0.4 0.8 1" />
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="left_upper_arm" pos="0 -0.12202130135018673 -0.2782506779661017">
+        <joint name="left_shoulder_x" type="hinge" axis="1 0 0" pos="0 0.04056 0" range="-50 180" />
+        <joint name="left_shoulder_y" type="hinge" axis="0 1 0" pos="0 0.04056 0" range="-90 90" />
+        <joint name="left_shoulder_z" type="hinge" axis="0 0 1" pos="0 0.04056 0" range="-50 180" />
+        <geom type="capsule" size="0.05563559322033899 0.12476694915254237" pos="0 -0.11202474576271186 0" euler="-90 0 0" rgba="0.2 0.4 0.8 1" />
+        <body name="left_forearm" pos="0 -0.3051694915254237 0">
+          <joint name="left_elbow_z" type="hinge" axis="0 0 1" pos="0 0 0" range="0 150" />
+          <geom type="capsule" size="0.0473728813559322 0.13220338983050844" pos="0 -0.15588983050847455 0" euler="-90 0 0" rgba="0.2 0.4 0.8 1" />
+          <body name="left_hand" pos="0 -0.3117796610169491 0">
+            <joint name="left_wrist_y" type="hinge" axis="0 1 0" pos="0 0 0" range="-80 80" />
+            <joint name="left_wrist_z" type="hinge" axis="0 0 1" pos="0 0 0" range="-60 60" />
+            <geom type="capsule" size="0.04902542372881356 0.019555084745762712" pos="0 -0.04406779661016949 0" euler="-90 0 0" rgba="0.2 0.4 0.8 1" />
+          </body>
+        </body>
+      </body>
+      <body name="right_upper_arm" pos="0 -0.1011906779661017 0.2782506779661017">
+        <joint name="right_shoulder_x" type="hinge" axis="1 0 0" pos="0 0.04056 0" range="-50 180" />
+        <joint name="right_shoulder_y" type="hinge" axis="0 1 0" pos="0 0.04056 0" range="-90 90" />
+        <joint name="right_shoulder_z" type="hinge" axis="0 0 1" pos="0 0.04056 0" range="-50 180" />
+        <geom type="capsule" size="0.05563559322033899 0.12476694915254237" pos="0 -0.11202474576271186 0" euler="-90 0 0" rgba="0.2 0.4 0.8 1" />
+        <body name="right_forearm" pos="0 -0.3051694915254237 0">
+          <joint name="right_elbow_z" type="hinge" axis="0 0 1" pos="0 0 0" range="0 150" />
+          <geom type="capsule" size="0.035 0.15588983050847455" pos="0 -0.15588983050847455 0" euler="-90 0 0" rgba="0.2 0.4 0.8 1" />
+          <body name="right_hand" pos="0 -0.3117796610169491 0">
+            <joint name="right_wrist_y" type="hinge" axis="0 1 0" pos="0 0 0" range="-80 80" />
+            <joint name="right_wrist_z" type="hinge" axis="0 0 1" pos="0 0 0" range="-60 60" />
+            <geom type="capsule" size="0.04902542372881356 0.019555084745762712" pos="0 -0.04406779661016949 0" euler="-90 0 0" rgba="0.2 0.4 0.8 1" />
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <option gravity="0 0 -9.81" />
+</mujoco>
