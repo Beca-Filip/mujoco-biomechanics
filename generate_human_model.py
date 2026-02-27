@@ -5,9 +5,8 @@ import argparse
 def generate_human_model(filename : str, mass : float, height : float, sex : str):
 
     k = 1  # scaling coefficient - will be changed depending on subject height
-    male_height = 172
-    female_height = 156
-    rgba_in = "0.8 0.6 0.2 1"
+    male_height = 177
+    female_height = 161
     if sex == "male":
         sheet_name = 0
         k = float(k / male_height)
@@ -42,7 +41,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     com_pos_x_dict = {}
     for i in lengths_dict:
         length_x = lengths_dict[i]
-        fraction_x = float(segment_com_x_dict[i]) / 100
+        fraction_x = float(segment_com_x_dict[i])
         # length percentage -> actual length -> local offset
         position_x = fraction_x * length_x
         com_pos_x_dict[i] = position_x
@@ -50,7 +49,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     com_pos_y_dict = {}
     for i in lengths_dict:
         length_y = lengths_dict[i]
-        fraction_y = float(segment_com_y_dict[i]) / 100
+        fraction_y = float(segment_com_y_dict[i])
         # length percentage -> actual length -> local offset
         position_y = fraction_y * length_y
         com_pos_y_dict[i] = position_y
@@ -58,10 +57,10 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     com_pos_z_dict = {}
     for i in lengths_dict:
         length_z = lengths_dict[i]
-        fraction_z = float(segment_com_z_dict[i]) / 100
+        fraction_z = float(segment_com_z_dict[i])
         # length percentage -> actual length -> local offset
         position_z = fraction_z * length_z
-        com_pos_x_dict[i] = position_z
+        com_pos_z_dict[i] = position_z
 
 
     print("lengths ", lengths_dict)
@@ -82,7 +81,6 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(thorax, "joint", type="free", pos="0 0 0")
     ET.SubElement(thorax, "geom", type="capsule", size=f"{0.55*lengths_dict['Thorax']/2} {height*0.07*0.01}", pos=f"0 -{0.55*lengths_dict['Thorax']/2} 0", euler="0 0 0", rgba=rgba_in)
     ET.SubElement(thorax, "geom", type="capsule", size=f"{0.45*lengths_dict['Thorax']/2} {height*0.07*0.01}", pos=f"0 -{0.55*lengths_dict['Thorax']+0.45*lengths_dict['Thorax']/2} 0", euler="0 0 0", rgba=rgba_in)
-    #ET.SubElement(thorax, "inertial", mass=str(mass_dict["Thorax"]), pos=f"{com_pos_x_dict['Thorax']} {com_pos_y_dict['Thorax']} {com_pos_z_dict['Thorax']}")
 
     # Head
     head = ET.SubElement(thorax, "body", name="head", pos="0 0 0")
