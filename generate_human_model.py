@@ -4,25 +4,25 @@ import argparse
 
 def generate_human_model(filename : str, mass : float, height : float, sex : str, alpha : float = 1.0):
 
-    k = 1 # scaling coefficient - will be changed depending on subject height
+    length_scaling = 1 # scaling coefficient - will be changed depending on subject height
     male_height = 1.77
     female_height = 1.61
     if sex == "male":
         file_name = "anthropometric_table_male.csv"
-        k = float(k / male_height)
+        length_scaling = float(length_scaling / male_height)
         rgba_in = f"0.2 0.4 0.8 {alpha}"
     elif sex == "female":
         file_name = "anthropometric_table_female.csv"
-        k = float(k / female_height)
+        length_scaling = float(length_scaling / female_height)
         rgba_in = f"0.9 0.4 0.6 {alpha}"
-    k = k*float(height)
+    length_scaling = length_scaling*float(height)
     df = pd.read_csv(file_name)
 
 
     # First column is segment names, second column is lengths
     segments = df.iloc[:, 0]
-    lengths = df.iloc[:, 1] * k   # scale values
-    widths = df.iloc[:, 12] * k   # scale values
+    lengths = df.iloc[:, 1] * length_scaling   # scale values
+    widths = df.iloc[:, 12] * length_scaling   # scale values
     segment_mass_percentages = df.iloc[:, 2]
     segment_com_x = df.iloc[:, 3]
     segment_com_y = df.iloc[:, 4]
@@ -61,11 +61,11 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     I12 = segment_masses * (lengths**2) * xy_inert_prod_float
     I13 = segment_masses * (lengths**2) * xz_inert_prod_float
     I23 = segment_masses * (lengths**2) * yz_inert_prod_float
-    print(segment_masses)
-    print(lengths)
-    print(x_rad_gyr_sqr)
-    print(I11)
-    print(I33)
+    # print(segment_masses)
+    # print(lengths)
+    # print(x_rad_gyr_sqr)
+    # print(I11)
+    # print(I33)
 
 
     # Create dicts
@@ -144,11 +144,11 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
         site_y_dict[site] = fraction_y * segment_length
         site_z_dict[site] = fraction_z * segment_width
 
-    #print("lengths ", lengths_dict)
-    #print("masses ", mass_dict)
-    print("x ", site_x_dict)
-    print("y ", site_y_dict)
-    print("z ", site_z_dict)
+    # print("lengths ", lengths_dict)
+    # print("masses ", mass_dict)
+    # print("x ", site_x_dict)
+    # print("y ", site_y_dict)
+    # print("z ", site_z_dict)
 
     mujoco = ET.Element("mujoco", model=filename.replace(".xml", ""))
     worldbody = ET.SubElement(mujoco, "worldbody")
@@ -157,7 +157,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(mujoco, "option", gravity="0 0 -9.81")
 
 
-    # Thorax as central segment
+    # Thorax as root segment
     thorax = ET.SubElement(worldbody, "body", name="thorax", pos=f"0 0 {height-lengths_dict['Head with Neck']+0.1}", euler="90 0 0")
     ET.SubElement(thorax, "joint", type="free", pos="0 0 0")
     ET.SubElement(thorax, "geom", type="capsule", size=f"{lengths_dict['Thorax']/3} {widths_dict['Thorax']/2-lengths_dict['Thorax']/6}", pos=f"0 -{lengths_dict['Thorax']/3} 0", euler="0 0 0", rgba=rgba_in)
@@ -293,8 +293,6 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     # TODO: How does collision work for overlapping segments?
     # TODO: Add mass etc...
     # TODO: Potential issue with thigh body position in relation to pelvis
-
-
 
     # Save to file
     tree = ET.ElementTree(mujoco)
