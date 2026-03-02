@@ -106,6 +106,8 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
         site_y_dict[site] = fraction_y * segment_width
         site_z_dict[site] = fraction_z * segment_width
 
+
+
     #print("lengths ", lengths_dict)
     #print("masses ", mass_dict)
     print("x ", site_x_dict)
@@ -124,7 +126,6 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(thorax, "joint", type="free", pos="0 0 0")
     ET.SubElement(thorax, "geom", type="capsule", size=f"{lengths_dict['Thorax']/3} {widths_dict['Thorax']/2-lengths_dict['Thorax']/6}", pos=f"0 -{lengths_dict['Thorax']/3} 0", euler="0 0 0", rgba=rgba_in)
     ET.SubElement(thorax, "geom", type="capsule", size=f"{lengths_dict['Thorax']/3} {widths_dict['Thorax']/2-lengths_dict['Thorax']/6}", pos=f"0 -{lengths_dict['Thorax']} 0", euler="0 0 0", rgba=rgba_in)
-    ET.SubElement(thorax, "site", name="thorax_front_site", pos=f"{com_pos_x_dict['Thorax']} {com_pos_y_dict['Thorax']} {com_pos_z_dict['Thorax']}", size="0.02", rgba="1 0 0 1")
     ET.SubElement(thorax, "inertial", mass=f"{mass_dict['Thorax']}", pos=f"{com_pos_x_dict['Thorax']} {com_pos_y_dict['Thorax']} {com_pos_z_dict['Thorax']}", fullinertia="0.02 0.03 0.04 0.001 0.002 0.003")
 
     # Head
@@ -158,6 +159,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(left_thigh, "joint", name="left_hip_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Thigh']} {joint_limit_positive_z_dict['Thigh']}")
     ET.SubElement(left_thigh, "geom", type="capsule", size=f"{widths_dict['Thigh']/2} {lengths_dict['Thigh']/2-widths_dict['Thigh']/4}", pos = f"0 {-lengths_dict['Thigh']/2} 0", euler="-90 0 0", rgba=rgba_in)
     ET.SubElement(left_thigh, "inertial", mass=f"{mass_dict['Thigh']}", pos=f"{com_pos_x_dict['Thigh']} {com_pos_y_dict['Thigh']} {com_pos_z_dict['Thigh']}", fullinertia="0.02 0.03 0.04 0.001 0.002 0.003")
+    ET.SubElement(left_thigh, "site", name="Greater trochanter left", pos=f"{site_x_dict['Greater trochanter left']} {site_y_dict['Greater trochanter left']} {site_z_dict['Greater trochanter left']}", size="0.02", euler="-90 0 0", rgba="1 0 0 1")
 
     # Right thigh
     right_thigh = ET.SubElement(pelvis, "body", name="right_thigh", pos=f"0 {-lengths_dict['Pelvis']} {widths_dict['Pelvis']/2}")
