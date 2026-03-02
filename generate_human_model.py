@@ -76,12 +76,41 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
         position_z = fraction_z * length_z
         com_pos_z_dict[i] = position_z
 
+    df_sites = pd.read_csv("site_positions.csv")
 
-    print("lengths ", lengths_dict)
-    print("masses ", mass_dict)
-    print("x ", com_pos_x_dict)
-    print("y ", com_pos_y_dict)
-    print("z ", com_pos_z_dict)
+    site_names = df_sites.iloc[:, 0]
+    site_segments = df_sites.iloc[:, 1]
+
+    site_x = df_sites.iloc[:, 2]
+    site_y = df_sites.iloc[:, 3]
+    site_z = df_sites.iloc[:, 4]
+    
+    # Site segments dict
+    site_body_dict = dict(zip(site_names, site_segments))
+
+    # Site coordinates dicts
+    site_x_dict = dict(zip(site_names, site_x))
+    site_y_dict = dict(zip(site_names, site_y))
+    site_z_dict = dict(zip(site_names, site_z))
+
+    for site in site_names:
+        segment_name = site_body_dict[site]
+        segment_length = lengths_dict[segment_name]
+        segment_width = widths_dict[segment_name]
+
+        fraction_x = float(site_x_dict[site]) / 100
+        fraction_y = float(site_y_dict[site]) / 100
+        fraction_z = float(site_z_dict[site]) / 100
+
+        site_x_dict[site] = fraction_x * segment_length
+        site_y_dict[site] = fraction_y * segment_width
+        site_z_dict[site] = fraction_z * segment_width
+
+    #print("lengths ", lengths_dict)
+    #print("masses ", mass_dict)
+    print("x ", site_x_dict)
+    print("y ", site_y_dict)
+    print("z ", site_z_dict)
 
     mujoco = ET.Element("mujoco", model=filename.replace(".xml", ""))
     worldbody = ET.SubElement(mujoco, "worldbody")
@@ -123,6 +152,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(left_thigh, "joint", name="left_hip_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Thigh']} {joint_limit_positive_y_dict['Thigh']}")
     ET.SubElement(left_thigh, "joint", name="left_hip_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Thigh']} {joint_limit_positive_z_dict['Thigh']}")
     ET.SubElement(left_thigh, "geom", type="capsule", size=f"{widths_dict['Thigh']/2} {lengths_dict['Thigh']/2-widths_dict['Thigh']/4}", pos = f"0 {-lengths_dict['Thigh']/2} 0", euler="-90 0 0", rgba=rgba_in)
+    ET.SubElement(left_thigh, "site", name="Greater_trochanter", pos=f"{site_x_dict['Greater trochanter']} {site_y_dict['Greater trochanter']} {site_z_dict['Greater trochanter']}", size="0.02", rgba="1 0 0 1")
 
     # Right thigh
     right_thigh = ET.SubElement(pelvis, "body", name="right_thigh", pos=f"0 {-lengths_dict['Pelvis']} {height*0.09 - height*0.02}")

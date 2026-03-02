@@ -28,6 +28,7 @@
             <joint name="left_hip_y" type="hinge" axis="0 1 0" pos="0 0 0" range="-40 50" />
             <joint name="left_hip_z" type="hinge" axis="0 0 1" pos="0 0 0" range="-30 100.0" />
             <geom type="capsule" size="0.08978813559322034 0.19307203389830507" pos="0 -0.23796610169491525 0" euler="-90 0 0" rgba="0.2 0.4 0.8 1" />
+            <site name="Greater_trochanter" pos="0.001132557311117495 0.00032247637173226084 0.00032247637173226084" size="0.02" rgba="1 0 0 1" />
             <body name="left_shank" pos="0 -0.4759322033898305 0">
               <joint name="left_knee_z" type="hinge" axis="0 0 1" pos="0 0 0" range="-150 0.0" />
               <geom type="capsule" size="0.056737288135593214 0.21014830508474577" pos="0 -0.23851694915254237 0" euler="-90 0 0" rgba="0.2 0.4 0.8 1" />
