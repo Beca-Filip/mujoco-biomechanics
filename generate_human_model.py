@@ -27,12 +27,27 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     segment_com_x = df.iloc[:, 3]
     segment_com_y = df.iloc[:, 4]
     segment_com_z = df.iloc[:, 5]
+    x_rad_gyr = df.iloc[:, 6]**2
+    y_rad_gyr = df.iloc[:, 7]**2
+    z_rad_gyr = df.iloc[:, 8]**2
+    xy_inert_prod = df.iloc[:, 9].apply(complex)
+    xz_inert_prod = df.iloc[:, 10].apply(complex)
+    yz_inert_prod = df.iloc[:, 11].apply(complex)
     joint_limit_negative_x = df.iloc[:, 13]
     joint_limit_positive_x = df.iloc[:, 14]
     joint_limit_negative_y = df.iloc[:, 15]
     joint_limit_positive_y = df.iloc[:, 16]
     joint_limit_negative_z = df.iloc[:, 17]
     joint_limit_positive_z = df.iloc[:, 18]
+
+    #squaring of the complex inertial products and converting result to float
+    xy_inert_prod_sqr = xy_inert_prod**2
+    xz_inert_prod_sqr = xz_inert_prod**2
+    yz_inert_prod_sqr = yz_inert_prod**2
+    xy_inert_prod_float = xy_inert_prod_sqr.apply(lambda x: x.real)
+    
+    xz_inert_prod_float = xz_inert_prod_sqr.apply(lambda x: x.real)
+    yz_inert_prod_float = yz_inert_prod_sqr.apply(lambda x: x.real)
 
     # Calculate segment masses based on mass percentage and total user mass
     segment_masses = (segment_mass_percentages / 100) * float(mass)
@@ -50,6 +65,13 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     joint_limit_positive_y_dict = dict(zip(segments, joint_limit_positive_y))
     joint_limit_negative_z_dict = dict(zip(segments, joint_limit_negative_z))
     joint_limit_positive_z_dict = dict(zip(segments, joint_limit_positive_z))
+    x_rad_gyr_dict = dict(zip(segments, x_rad_gyr))
+    y_rad_gyr_dict = dict(zip(segments, y_rad_gyr))
+    z_rad_gyr_dict = dict(zip(segments, z_rad_gyr))
+    xy_inert_prod_dict = dict(zip(segments, xy_inert_prod_float))
+    xz_inert_prod_dict = dict(zip(segments, xz_inert_prod_float))
+    yz_inert_prod_dict = dict(zip(segments, yz_inert_prod_float))
+
 
     # Local center of mass position dicts
     com_pos_x_dict = {}
