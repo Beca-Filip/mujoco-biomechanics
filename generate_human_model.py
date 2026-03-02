@@ -2,7 +2,7 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 import argparse
 
-def generate_human_model(filename : str, mass : float, height : float, sex : str):
+def generate_human_model(filename : str, mass : float, height : float, sex : str, alpha : float = 1.0):
 
     k = 1 # scaling coefficient - will be changed depending on subject height
     male_height = 1.77
@@ -10,11 +10,11 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     if sex == "male":
         file_name = "anthropometric_table_male.csv"
         k = float(k / male_height)
-        rgba_in = "0.2 0.4 0.8 1"
+        rgba_in = f"0.2 0.4 0.8 {alpha}"
     elif sex == "female":
         file_name = "anthropometric_table_female.csv"
         k = float(k / female_height)
-        rgba_in = "0.9 0.4 0.6 1"
+        rgba_in = f"0.9 0.4 0.6 {alpha}"
     k = k*float(height)
     df = pd.read_csv(file_name)
 
@@ -333,6 +333,14 @@ if __name__ == "__main__":
         help="Sex of the human who's MJCF we want to generate ('male' or 'female')"
     )
 
+    parser.add_argument(
+        "--alpha",
+        required=False,
+        type=float,
+        default=1.0,
+        help="The alpha value of the generated mesh (0: transparent, 1: opaque)"
+    )
+
     args = parser.parse_args()
 
-    generate_human_model(filename=args.output, mass=args.mass, height=args.tall, sex=args.sex)
+    generate_human_model(filename=args.output, mass=args.mass, height=args.tall, sex=args.sex, alpha=args.alpha)
