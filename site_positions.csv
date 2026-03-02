@@ -2,5 +2,17 @@ site name,segment name,"X position of site
 (% of segment length)","Y position of site
 (% of segment length)","Z position of site
 (% of segment length)"
-Greater trochanter,Thigh,50,100,100
-Greater trochanter,Thigh,50,100,100
+greater_trochanter_left,Thigh,0,0,-50
+greater_trochanter_right,Thigh,0,0,50
+lateral_femoral_epicondyle_left,Thigh,0,-100,-50
+lateral_femoral_epicondyle_right,Thigh,0,-100,50
+lateral_maleollus_left,Shank,0,-100,-50
+lateral_maleollus_right,Shank,0,-100,50
+metatarsal_fifth_left,Foot,75,0,-50
+metatarsal_fifth_right,Foot,75,0,50
+acromion_left,Upper Arm,0,20,-20
+acromion_right,Upper Arm,0,20,20
+lateral_humeral_epicondyle_left,Upper Arm,0,-100,-50
+lateral_humeral_epicondyle_right,Upper Arm,0,-100,50
+ulnar_styloid_left,Hand,0,0,-50
+ulnar_styloid_right,Hand,0,0,50
