@@ -194,7 +194,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(right_foot, "inertial", mass=f"{mass_dict['Foot']}", pos=f"{com_pos_x_dict['Foot']} {com_pos_y_dict['Foot']} {com_pos_z_dict['Foot']}", fullinertia="0.02 0.03 0.04 0.001 0.002 0.003")
 
     # Left upper arm
-    left_upper_arm = ET.SubElement(thorax, "body", name="left_upper_arm", pos=f"0 -{widths_dict['Thorax']*lengths_dict['Thorax']} -{height*0.07 + height*0.0208 + 0.55*lengths_dict['Thorax']/2}")
+    left_upper_arm = ET.SubElement(thorax, "body", name="left_upper_arm", pos=f"0 -{0.55*lengths_dict['Thorax']/2} -{height*0.07 + height*0.0208 + 0.55*lengths_dict['Thorax']/2}")
     ET.SubElement(left_upper_arm, "joint", name="left_shoulder_x", type="hinge", axis="1 0 0", pos=f"0 {height*0.0208} 0", range=f"{-joint_limit_negative_x_dict['Upper Arm']} {joint_limit_positive_x_dict['Upper Arm']}")
     ET.SubElement(left_upper_arm, "joint", name="left_shoulder_y", type="hinge", axis="0 1 0", pos=f"0 {height*0.0208} 0", range=f"{-joint_limit_negative_y_dict['Upper Arm']} {joint_limit_positive_y_dict['Upper Arm']}")
     ET.SubElement(left_upper_arm, "joint", name="left_shoulder_z", type="hinge", axis="0 0 1", pos=f"0 {height*0.0208} 0", range=f"{-joint_limit_negative_z_dict['Upper Arm']} {joint_limit_positive_z_dict['Upper Arm']}")
@@ -203,7 +203,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
 
     # Right upper arm
     right_upper_arm = ET.SubElement(thorax, "body", name="right_upper_arm", pos=f"0 -{0.55*lengths_dict['Thorax']/2} {height*0.07 + height*0.0208 + 0.55*lengths_dict['Thorax']/2}")
-    ET.SubElement(right_upper_arm, "joint", name="right_shoulder_x", type="hinge", axis="1 0 0", pos=f"0 {height*0.0208} 0", range=f"{-joint_limit_negative_x_dict['Upper Arm']} {joint_limit_positive_x_dict['Upper Arm']}")
+    ET.SubElement(right_upper_arm, "joint", name="right_shoulder_x", type="hinge", axis="1 0 0", pos=f"0 {height*0.0208} 0", range=f"{-joint_limit_positive_x_dict['Upper Arm']} {joint_limit_negative_x_dict['Upper Arm']}")
     ET.SubElement(right_upper_arm, "joint", name="right_shoulder_y", type="hinge", axis="0 1 0", pos=f"0 {height*0.0208} 0", range=f"{-joint_limit_negative_y_dict['Upper Arm']} {joint_limit_positive_y_dict['Upper Arm']}")
     ET.SubElement(right_upper_arm, "joint", name="right_shoulder_z", type="hinge", axis="0 0 1", pos=f"0 {height*0.0208} 0", range=f"{-joint_limit_negative_z_dict['Upper Arm']} {joint_limit_positive_z_dict['Upper Arm']}")
     ET.SubElement(right_upper_arm, "geom", type="capsule", size=f"{widths_dict['Upper Arm']/2} {lengths_dict['Upper Arm']/2-widths_dict['Upper Arm']/4}", pos = f"0 {-lengths_dict['Upper Arm']/2 + height*0.0208} 0", euler="-90 0 0", rgba=rgba_in)
@@ -218,7 +218,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     # Right forearm
     right_forearm = ET.SubElement(right_upper_arm, "body", name="right_forearm", pos=f"0 {-lengths_dict['Upper Arm']} 0")
     ET.SubElement(right_forearm, "joint", name="right_elbow_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Forearm']} {joint_limit_positive_z_dict['Forearm']}")
-    ET.SubElement(right_forearm, "geom", type="capsule", size=f"0.035 {lengths_dict['Forearm']/2}", pos=f"0 {-lengths_dict['Forearm']/2} 0", euler="-90 0 0", rgba=rgba_in)
+    ET.SubElement(right_forearm, "geom", type="capsule", size=f"{widths_dict['Forearm']/2} {lengths_dict['Forearm']/2-widths_dict['Forearm']/4}", pos=f"0 {-lengths_dict['Forearm']/2} 0", euler="-90 0 0", rgba=rgba_in)
     ET.SubElement(right_forearm, "inertial", mass=f"{mass_dict['Forearm']}", pos=f"{com_pos_x_dict['Forearm']} {com_pos_y_dict['Forearm']} {com_pos_z_dict['Forearm']}", fullinertia="0.02 0.03 0.04 0.001 0.002 0.003")
 
     # Left hand
