@@ -45,12 +45,23 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     xz_inert_prod_sqr = xz_inert_prod**2
     yz_inert_prod_sqr = yz_inert_prod**2
     xy_inert_prod_float = xy_inert_prod_sqr.apply(lambda x: x.real)
-    
     xz_inert_prod_float = xz_inert_prod_sqr.apply(lambda x: x.real)
     yz_inert_prod_float = yz_inert_prod_sqr.apply(lambda x: x.real)
 
+
+
     # Calculate segment masses based on mass percentage and total user mass
     segment_masses = (segment_mass_percentages / 100) * float(mass)
+    print(segment_masses)
+
+    # fullinertia elements
+    I11 = segment_masses * lengths * x_rad_gyr
+    I22 = segment_masses * lengths * y_rad_gyr
+    I33 = segment_masses * lengths * z_rad_gyr
+    I12 = segment_masses * lengths * xy_inert_prod_float
+    I13 = segment_masses * lengths * xz_inert_prod_float
+    I23 = segment_masses * lengths * yz_inert_prod_float
+
 
     # Create dicts
     lengths_dict = dict(zip(segments, lengths))
@@ -65,12 +76,12 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     joint_limit_positive_y_dict = dict(zip(segments, joint_limit_positive_y))
     joint_limit_negative_z_dict = dict(zip(segments, joint_limit_negative_z))
     joint_limit_positive_z_dict = dict(zip(segments, joint_limit_positive_z))
-    x_rad_gyr_dict = dict(zip(segments, x_rad_gyr))
-    y_rad_gyr_dict = dict(zip(segments, y_rad_gyr))
-    z_rad_gyr_dict = dict(zip(segments, z_rad_gyr))
-    xy_inert_prod_dict = dict(zip(segments, xy_inert_prod_float))
-    xz_inert_prod_dict = dict(zip(segments, xz_inert_prod_float))
-    yz_inert_prod_dict = dict(zip(segments, yz_inert_prod_float))
+    I11_dict = dict(zip(segments, I11))
+    I22_dict = dict(zip(segments, I22))
+    I33_dict = dict(zip(segments, I33))
+    I12_dict = dict(zip(segments, I12))
+    I13_dict = dict(zip(segments, I13))
+    I23_dict = dict(zip(segments, I23))
 
 
     # Local center of mass position dicts
