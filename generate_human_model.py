@@ -168,7 +168,8 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(worldbody, "light", diffuse=".8 .8 .8", pos="0 0 3", dir="0 0 -1")
     ET.SubElement(mujoco, "option", gravity="0 0 -9.81")
 
-    thorax_gen_height = lengths_dict['Thorax'] + lengths_dict['Abdomen'] + lengths_dict['Pelvis'] + lengths_dict["Thigh"] + lengths_dict["Shank"] + widths_dict["Foot"]/2 
+    thorax_gen_height = widths_dict["Foot"]/2 + lengths_dict["Shank"] + lengths_dict["Thigh"] + special_joint_pos_y_dict['Hip'] + lengths_dict['Abdomen'] + lengths_dict['Thorax']
+    #thorax_gen_height = height - lengths_dict['Head with Neck']
 
     # Thorax as root segment
     thorax = ET.SubElement(worldbody, "body", name="thorax", pos=f"0 0 {thorax_gen_height}", euler="90 0 0")
@@ -205,7 +206,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(pelvis, "inertial", mass=f"{mass_dict['Pelvis']}", pos=f"{com_pos_x_dict['Pelvis']} {com_pos_y_dict['Pelvis']} {com_pos_z_dict['Pelvis']}", fullinertia=f"{I11_dict['Pelvis']} {I22_dict['Pelvis']} {I33_dict['Pelvis']} {I12_dict['Pelvis']} {I13_dict['Pelvis']} {I23_dict['Pelvis']}")
 
     # Left thigh
-    left_thigh = ET.SubElement(pelvis, "body", name="left_thigh", pos=f"{special_joint_pos_x_dict['Hip']} {special_joint_pos_y_dict['Hip']} {-special_joint_pos_z_dict['Hip']}")
+    left_thigh = ET.SubElement(pelvis, "body", name="left_thigh", pos=f"{special_joint_pos_x_dict['Hip']} {-special_joint_pos_y_dict['Hip']} {-special_joint_pos_z_dict['Hip']}")
     ET.SubElement(contact, "exclude", body1="pelvis", body2="left_thigh")
     ET.SubElement(left_thigh, "joint", name="left_hip_x", type="hinge", axis="1 0 0", pos="0 0 0", range=f"{-joint_limit_negative_x_dict['Thigh']} {joint_limit_positive_x_dict['Thigh']}")
     ET.SubElement(left_thigh, "joint", name="left_hip_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Thigh']} {joint_limit_positive_y_dict['Thigh']}")
@@ -214,7 +215,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(left_thigh, "inertial", mass=f"{mass_dict['Thigh']}", pos=f"{com_pos_x_dict['Thigh']} {com_pos_y_dict['Thigh']} {-com_pos_z_dict['Thigh']}", fullinertia=f"{I11_dict['Thigh']} {I22_dict['Thigh']} {I33_dict['Thigh']} {I12_dict['Thigh']} {I13_dict['Thigh']} {I23_dict['Thigh']}")
 
     # Right thigh
-    right_thigh = ET.SubElement(pelvis, "body", name="right_thigh", pos=f"{special_joint_pos_x_dict['Hip']} {special_joint_pos_y_dict['Hip']} {special_joint_pos_z_dict['Hip']}")
+    right_thigh = ET.SubElement(pelvis, "body", name="right_thigh", pos=f"{special_joint_pos_x_dict['Hip']} {-special_joint_pos_y_dict['Hip']} {special_joint_pos_z_dict['Hip']}")
     ET.SubElement(contact, "exclude", body1="pelvis", body2="right_thigh")
     ET.SubElement(right_thigh, "joint", name="right_hip_x", type="hinge", axis="1 0 0", pos="0 0 0", range=f"{-joint_limit_positive_x_dict['Thigh']} {joint_limit_negative_x_dict['Thigh']}")
     ET.SubElement(right_thigh, "joint", name="right_hip_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Thigh']} {joint_limit_positive_y_dict['Thigh']}")
@@ -253,7 +254,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(right_foot, "inertial", mass=f"{mass_dict['Foot']}", pos=f"{com_pos_x_dict['Foot']} {com_pos_y_dict['Foot']} {com_pos_z_dict['Foot']}", fullinertia=f"{I11_dict['Foot']} {I22_dict['Foot']} {I33_dict['Foot']} {I12_dict['Foot']} {I13_dict['Foot']} {I23_dict['Foot']}")
 
     # Left upper arm
-    left_upper_arm = ET.SubElement(thorax, "body", name="left_upper_arm", pos=f"{special_joint_pos_x_dict['Shoulder']} {special_joint_pos_y_dict['Shoulder']} {-special_joint_pos_z_dict['Shoulder']}")
+    left_upper_arm = ET.SubElement(thorax, "body", name="left_upper_arm", pos=f"{special_joint_pos_x_dict['Shoulder']} {-special_joint_pos_y_dict['Shoulder']} {-special_joint_pos_z_dict['Shoulder']}")
     ET.SubElement(contact, "exclude", body1="thorax", body2="left_upper_arm")
     ET.SubElement(left_upper_arm, "joint", name="left_shoulder_x", type="hinge", axis="1 0 0", pos=f"0 0 0", range=f"{-joint_limit_negative_x_dict['Upper Arm']} {joint_limit_positive_x_dict['Upper Arm']}")
     ET.SubElement(left_upper_arm, "joint", name="left_shoulder_y", type="hinge", axis="0 1 0", pos=f"0 0 0", range=f"{-joint_limit_negative_y_dict['Upper Arm']} {joint_limit_positive_y_dict['Upper Arm']}")
@@ -262,7 +263,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(left_upper_arm, "inertial", mass=f"{mass_dict['Upper Arm']}", pos=f"{com_pos_x_dict['Upper Arm']} {com_pos_y_dict['Upper Arm']} {-com_pos_z_dict['Upper Arm']}", fullinertia=f"{I11_dict['Upper Arm']} {I22_dict['Upper Arm']} {I33_dict['Upper Arm']} {I12_dict['Upper Arm']} {I13_dict['Upper Arm']} {I23_dict['Upper Arm']}")
 
     # Right upper arm
-    right_upper_arm = ET.SubElement(thorax, "body", name="right_upper_arm", pos=f"{special_joint_pos_x_dict['Shoulder']} {special_joint_pos_y_dict['Shoulder']} {special_joint_pos_z_dict['Shoulder']}")
+    right_upper_arm = ET.SubElement(thorax, "body", name="right_upper_arm", pos=f"{special_joint_pos_x_dict['Shoulder']} {-special_joint_pos_y_dict['Shoulder']} {special_joint_pos_z_dict['Shoulder']}")
     ET.SubElement(contact, "exclude", body1="thorax", body2="right_upper_arm")
     ET.SubElement(right_upper_arm, "joint", name="right_shoulder_x", type="hinge", axis="1 0 0", pos=f"0 0 0", range=f"{-joint_limit_positive_x_dict['Upper Arm']} {joint_limit_negative_x_dict['Upper Arm']}")
     ET.SubElement(right_upper_arm, "joint", name="right_shoulder_y", type="hinge", axis="0 1 0", pos=f"0 0 0", range=f"{-joint_limit_negative_y_dict['Upper Arm']} {joint_limit_positive_y_dict['Upper Arm']}")
