@@ -162,6 +162,10 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     # print("z ", site_z_dict)
 
     mujoco = ET.Element("mujoco", model=filename.replace(".xml", ""))
+    visual = ET.SubElement(mujoco, "visual")
+    ET.SubElement(visual, "map", force="0.1", zfar="30")
+    ET.SubElement(visual, "rgba", haze="0.15 0.25 0.35 1")
+    ET.SubElement(visual, "global", offwidth="2560", offheight="1440", elevation="-20", azimuth="120")
     contact = ET.SubElement(mujoco, "contact")
     worldbody = ET.SubElement(mujoco, "worldbody")
     ET.SubElement(worldbody, "geom", type="plane", size="1 1 .1", rgba=".8 .8 .8 1")
@@ -169,13 +173,13 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(mujoco, "option", gravity="0 0 -9.81")
 
     thorax_gen_height = widths_dict["Foot"]/2 + lengths_dict["Shank"] + lengths_dict["Thigh"] + special_joint_pos_y_dict['Hip'] + lengths_dict['Abdomen'] + lengths_dict['Thorax']
-    #thorax_gen_height = height - lengths_dict['Head with Neck']
 
     # Thorax as root segment
     thorax = ET.SubElement(worldbody, "body", name="thorax", pos=f"0 0 {thorax_gen_height}", euler="90 0 0")
     ET.SubElement(thorax, "joint", type="free", pos="0 0 0")
-    ET.SubElement(thorax, "geom", type="capsule", size=f"{lengths_dict['Thorax']/4} {widths_dict['Thorax']/2-lengths_dict['Thorax']/4}", pos=f"0 -{lengths_dict['Thorax']/4} 0", euler="0 0 0", rgba=rgba_in)
-    ET.SubElement(thorax, "geom", type="capsule", size=f"{lengths_dict['Thorax']/4} {widths_dict['Thorax']/2-lengths_dict['Thorax']/4}", pos=f"0 -{lengths_dict['Thorax']*3/4} 0", euler="0 0 0", rgba=rgba_in)
+    ET.SubElement(thorax, "geom", type="box", size=f"{lengths_dict['Thorax']/4} {lengths_dict['Thorax']/2} {widths_dict['Thorax']/2}", pos=f"0 -{lengths_dict['Thorax']/2} 0", euler="0 0 0", rgba=rgba_in)
+    #ET.SubElement(thorax, "geom", type="capsule", size=f"{lengths_dict['Thorax']/4} {widths_dict['Thorax']/2-lengths_dict['Thorax']/4}", pos=f"0 -{lengths_dict['Thorax']/4} 0", euler="0 0 0", rgba=rgba_in)
+    #ET.SubElement(thorax, "geom", type="capsule", size=f"{lengths_dict['Thorax']/4} {widths_dict['Thorax']/2-lengths_dict['Thorax']/4}", pos=f"0 -{lengths_dict['Thorax']*3/4} 0", euler="0 0 0", rgba=rgba_in)
     ET.SubElement(thorax, "inertial", mass=f"{mass_dict['Thorax']}", pos=f"{com_pos_x_dict['Thorax']} {com_pos_y_dict['Thorax']} {com_pos_z_dict['Thorax']}", fullinertia=f"{I11_dict['Thorax']} {I22_dict['Thorax']} {I33_dict['Thorax']} {I12_dict['Thorax']} {I13_dict['Thorax']} {I23_dict['Thorax']}")
 
     # Head
@@ -212,7 +216,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(left_thigh, "joint", name="left_hip_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Thigh']} {joint_limit_positive_y_dict['Thigh']}")
     ET.SubElement(left_thigh, "joint", name="left_hip_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Thigh']} {joint_limit_positive_z_dict['Thigh']}")
     ET.SubElement(left_thigh, "geom", type="capsule", size=f"{widths_dict['Thigh']/2} {lengths_dict['Thigh']/2-widths_dict['Thigh']/4}", pos = f"0 {-lengths_dict['Thigh']/2} 0", euler="-90 0 0", rgba=rgba_in)
-    ET.SubElement(left_thigh, "inertial", mass=f"{mass_dict['Thigh']}", pos=f"{com_pos_x_dict['Thigh']} {com_pos_y_dict['Thigh']} {-com_pos_z_dict['Thigh']}", fullinertia=f"{I11_dict['Thigh']} {I22_dict['Thigh']} {I33_dict['Thigh']} {I12_dict['Thigh']} {I13_dict['Thigh']} {I23_dict['Thigh']}")
+    ET.SubElement(left_thigh, "inertial", mass=f"{mass_dict['Thigh']}", pos=f"{com_pos_x_dict['Thigh']} {com_pos_y_dict['Thigh']} {-com_pos_z_dict['Thigh']}", fullinertia=f"{I11_dict['Thigh']} {I22_dict['Thigh']} {I33_dict['Thigh']} {I12_dict['Thigh']} {-I13_dict['Thigh']} {-I23_dict['Thigh']}")
 
     # Right thigh
     right_thigh = ET.SubElement(pelvis, "body", name="right_thigh", pos=f"{special_joint_pos_x_dict['Hip']} {-special_joint_pos_y_dict['Hip']} {special_joint_pos_z_dict['Hip']}")
@@ -228,7 +232,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(contact, "exclude", body1="left_thigh", body2="left_shank")
     ET.SubElement(left_shank, "joint", name="left_knee_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Shank']} {joint_limit_positive_z_dict['Shank']}")
     ET.SubElement(left_shank, "geom", type="capsule", size=f"{widths_dict['Shank']/2} {lengths_dict['Shank']/2-widths_dict['Shank']/4}", pos = f"0 {-lengths_dict['Shank']/2} 0", euler="-90 0 0", rgba=rgba_in)
-    ET.SubElement(left_shank, "inertial", mass=f"{mass_dict['Shank']}", pos=f"{com_pos_x_dict['Shank']} {com_pos_y_dict['Shank']} {-com_pos_z_dict['Shank']}", fullinertia=f"{I11_dict['Shank']} {I22_dict['Shank']} {I33_dict['Shank']} {I12_dict['Shank']} {I13_dict['Shank']} {I23_dict['Shank']}")
+    ET.SubElement(left_shank, "inertial", mass=f"{mass_dict['Shank']}", pos=f"{com_pos_x_dict['Shank']} {com_pos_y_dict['Shank']} {-com_pos_z_dict['Shank']}", fullinertia=f"{I11_dict['Shank']} {I22_dict['Shank']} {I33_dict['Shank']} {I12_dict['Shank']} {-I13_dict['Shank']} {-I23_dict['Shank']}")
 
     # Right shank
     right_shank = ET.SubElement(right_thigh, "body", name="right_shank", pos=f"0 {-lengths_dict['Thigh']} 0")
@@ -243,7 +247,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(left_foot, "joint", name="left_ankle_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Foot']} {joint_limit_positive_y_dict['Foot']}")
     ET.SubElement(left_foot, "joint", name="left_ankle_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Foot']} {joint_limit_positive_z_dict['Foot']}")
     ET.SubElement(left_foot, "geom", type="capsule", size=f"{widths_dict['Foot']/2} {lengths_dict['Foot']/2-widths_dict['Foot']/4}", pos = f"{lengths_dict['Foot']/2} 0 0", euler="0 90 0", rgba=rgba_in)
-    ET.SubElement(left_foot, "inertial", mass=f"{mass_dict['Foot']}", pos=f"{com_pos_x_dict['Foot']} {com_pos_y_dict['Foot']} {-com_pos_z_dict['Foot']}", fullinertia=f"{I11_dict['Foot']} {I22_dict['Foot']} {I33_dict['Foot']} {I12_dict['Foot']} {I13_dict['Foot']} {I23_dict['Foot']}")
+    ET.SubElement(left_foot, "inertial", mass=f"{mass_dict['Foot']}", pos=f"{com_pos_x_dict['Foot']} {com_pos_y_dict['Foot']} {-com_pos_z_dict['Foot']}", fullinertia=f"{I11_dict['Foot']} {I22_dict['Foot']} {I33_dict['Foot']} {I12_dict['Foot']} {-I13_dict['Foot']} {-I23_dict['Foot']}")
 
     # Right foot
     right_foot = ET.SubElement(right_shank, "body", name="right_foot", pos=f"0 {-lengths_dict['Shank']} 0")
@@ -260,7 +264,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(left_upper_arm, "joint", name="left_shoulder_y", type="hinge", axis="0 1 0", pos=f"0 0 0", range=f"{-joint_limit_negative_y_dict['Upper Arm']} {joint_limit_positive_y_dict['Upper Arm']}")
     ET.SubElement(left_upper_arm, "joint", name="left_shoulder_z", type="hinge", axis="0 0 1", pos=f"0 0 0", range=f"{-joint_limit_negative_z_dict['Upper Arm']} {joint_limit_positive_z_dict['Upper Arm']}")
     ET.SubElement(left_upper_arm, "geom", type="capsule", size=f"{widths_dict['Upper Arm']/2} {lengths_dict['Upper Arm']/2-widths_dict['Upper Arm']/4}", pos = f"0 {-lengths_dict['Upper Arm']/2 + height*0.0208} 0", euler="-90 0 0", rgba=rgba_in)
-    ET.SubElement(left_upper_arm, "inertial", mass=f"{mass_dict['Upper Arm']}", pos=f"{com_pos_x_dict['Upper Arm']} {com_pos_y_dict['Upper Arm']} {-com_pos_z_dict['Upper Arm']}", fullinertia=f"{I11_dict['Upper Arm']} {I22_dict['Upper Arm']} {I33_dict['Upper Arm']} {I12_dict['Upper Arm']} {I13_dict['Upper Arm']} {I23_dict['Upper Arm']}")
+    ET.SubElement(left_upper_arm, "inertial", mass=f"{mass_dict['Upper Arm']}", pos=f"{com_pos_x_dict['Upper Arm']} {com_pos_y_dict['Upper Arm']} {-com_pos_z_dict['Upper Arm']}", fullinertia=f"{I11_dict['Upper Arm']} {I22_dict['Upper Arm']} {I33_dict['Upper Arm']} {I12_dict['Upper Arm']} {-I13_dict['Upper Arm']} {-I23_dict['Upper Arm']}")
 
     # Right upper arm
     right_upper_arm = ET.SubElement(thorax, "body", name="right_upper_arm", pos=f"{special_joint_pos_x_dict['Shoulder']} {-special_joint_pos_y_dict['Shoulder']} {special_joint_pos_z_dict['Shoulder']}")
@@ -276,7 +280,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(contact, "exclude", body1="left_upper_arm", body2="left_forearm")
     ET.SubElement(left_forearm, "joint", name="left_elbow_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Forearm']} {joint_limit_positive_z_dict['Forearm']}")
     ET.SubElement(left_forearm, "geom", type="capsule", size=f"{widths_dict['Forearm']/2} {lengths_dict['Forearm']/2-widths_dict['Forearm']/4}", pos=f"0 {-lengths_dict['Forearm']/2} 0", euler="-90 0 0", rgba=rgba_in)
-    ET.SubElement(left_forearm, "inertial", mass=f"{mass_dict['Forearm']}", pos=f"{com_pos_x_dict['Forearm']} {com_pos_y_dict['Forearm']} {-com_pos_z_dict['Forearm']}", fullinertia=f"{I11_dict['Forearm']} {I22_dict['Forearm']} {I33_dict['Forearm']} {I12_dict['Forearm']} {I13_dict['Forearm']} {I23_dict['Forearm']}")
+    ET.SubElement(left_forearm, "inertial", mass=f"{mass_dict['Forearm']}", pos=f"{com_pos_x_dict['Forearm']} {com_pos_y_dict['Forearm']} {-com_pos_z_dict['Forearm']}", fullinertia=f"{I11_dict['Forearm']} {I22_dict['Forearm']} {I33_dict['Forearm']} {I12_dict['Forearm']} {-I13_dict['Forearm']} {-I23_dict['Forearm']}")
 
     # Right forearm
     right_forearm = ET.SubElement(right_upper_arm, "body", name="right_forearm", pos=f"0 {-lengths_dict['Upper Arm']} 0")
@@ -291,7 +295,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(left_hand, "joint", name="left_wrist_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Hand']} {joint_limit_positive_y_dict['Hand']}")
     ET.SubElement(left_hand, "joint", name="left_wrist_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Hand']} {joint_limit_positive_z_dict['Hand']}")
     ET.SubElement(left_hand, "geom", type="capsule", size=f"{widths_dict['Hand']/2} {lengths_dict['Hand']/2-widths_dict['Hand']/4}", pos=f"0 {-lengths_dict['Hand']/2} 0", euler="-90 0 0", rgba=rgba_in)
-    ET.SubElement(left_hand, "inertial", mass=f"{mass_dict['Hand']}", pos=f"{com_pos_x_dict['Hand']} {com_pos_y_dict['Hand']} {-com_pos_z_dict['Hand']}", fullinertia=f"{I11_dict['Hand']} {I22_dict['Hand']} {I33_dict['Hand']} {I12_dict['Hand']} {I13_dict['Hand']} {I23_dict['Hand']}")
+    ET.SubElement(left_hand, "inertial", mass=f"{mass_dict['Hand']}", pos=f"{com_pos_x_dict['Hand']} {com_pos_y_dict['Hand']} {-com_pos_z_dict['Hand']}", fullinertia=f"{I11_dict['Hand']} {I22_dict['Hand']} {I33_dict['Hand']} {I12_dict['Hand']} {-I13_dict['Hand']} {-I23_dict['Hand']}")
 
     # Right hand
     right_hand = ET.SubElement(right_forearm, "body", name="right_hand", pos=f"0 {-lengths_dict['Forearm']} 0")
