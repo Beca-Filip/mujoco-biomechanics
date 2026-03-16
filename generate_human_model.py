@@ -172,8 +172,8 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     # Thorax as root segment
     thorax = ET.SubElement(worldbody, "body", name="thorax", pos=f"0 0 {height-lengths_dict['Head with Neck']}", euler="90 0 0")
     ET.SubElement(thorax, "joint", type="free", pos="0 0 0")
-    ET.SubElement(thorax, "geom", type="capsule", size=f"{lengths_dict['Thorax']/3} {widths_dict['Thorax']/2-lengths_dict['Thorax']/6}", pos=f"0 -{lengths_dict['Thorax']/3} 0", euler="0 0 0", rgba=rgba_in)
-    ET.SubElement(thorax, "geom", type="capsule", size=f"{lengths_dict['Thorax']/3} {widths_dict['Thorax']/2-lengths_dict['Thorax']/6}", pos=f"0 -{lengths_dict['Thorax']} 0", euler="0 0 0", rgba=rgba_in)
+    ET.SubElement(thorax, "geom", type="capsule", size=f"{lengths_dict['Thorax']/4} {widths_dict['Thorax']/2-lengths_dict['Thorax']/4}", pos=f"0 -{lengths_dict['Thorax']/4} 0", euler="0 0 0", rgba=rgba_in)
+    ET.SubElement(thorax, "geom", type="capsule", size=f"{lengths_dict['Thorax']/4} {widths_dict['Thorax']/2-lengths_dict['Thorax']/4}", pos=f"0 -{lengths_dict['Thorax']*3/4} 0", euler="0 0 0", rgba=rgba_in)
     ET.SubElement(thorax, "inertial", mass=f"{mass_dict['Thorax']}", pos=f"{com_pos_x_dict['Thorax']} {com_pos_y_dict['Thorax']} {com_pos_z_dict['Thorax']}", fullinertia=f"{I11_dict['Thorax']} {I22_dict['Thorax']} {I33_dict['Thorax']} {I12_dict['Thorax']} {I13_dict['Thorax']} {I23_dict['Thorax']}")
 
     # Head
@@ -191,7 +191,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(abdomen, "joint", name="abdomen_x", type="hinge", axis="1 0 0", pos="0 0 0", range=f"{-joint_limit_negative_x_dict['Abdomen']} {joint_limit_positive_x_dict['Abdomen']}")
     ET.SubElement(abdomen, "joint", name="abdomen_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Abdomen']} {joint_limit_positive_y_dict['Abdomen']}")
     ET.SubElement(abdomen, "joint", name="abdomen_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Abdomen']} {joint_limit_positive_z_dict['Abdomen']}")
-    ET.SubElement(abdomen, "geom", type="capsule", size=f"{lengths_dict['Abdomen']/2} {widths_dict['Abdomen']/2-lengths_dict['Abdomen']/4}", pos=f"0 -{lengths_dict['Abdomen']} 0", euler="0 0 0", rgba=rgba_in)
+    ET.SubElement(abdomen, "geom", type="capsule", size=f"{lengths_dict['Abdomen']/2} {widths_dict['Abdomen']/2-lengths_dict['Abdomen']/4}", pos=f"0 -{lengths_dict['Abdomen']/2} 0", euler="0 0 0", rgba=rgba_in)
     ET.SubElement(abdomen, "inertial", mass=f"{mass_dict['Abdomen']}", pos=f"{com_pos_x_dict['Abdomen']} {com_pos_y_dict['Abdomen']} {com_pos_z_dict['Abdomen']}", fullinertia=f"{I11_dict['Abdomen']} {I22_dict['Abdomen']} {I33_dict['Abdomen']} {I12_dict['Abdomen']} {I13_dict['Abdomen']} {I23_dict['Abdomen']}")
 
     # Pelvis
@@ -200,7 +200,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(pelvis, "joint", name="pelvis_x", type="hinge", axis="1 0 0", pos="0 0 0", range=f"{-joint_limit_negative_x_dict['Pelvis']} {joint_limit_positive_x_dict['Pelvis']}")
     ET.SubElement(pelvis, "joint", name="pelvis_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Pelvis']} {joint_limit_positive_y_dict['Pelvis']}")
     ET.SubElement(pelvis, "joint", name="pelvis_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Pelvis']} {joint_limit_positive_z_dict['Pelvis']}")
-    ET.SubElement(pelvis, "geom", type="capsule", size=f"{lengths_dict['Pelvis']/2} {widths_dict['Pelvis']/2-lengths_dict['Pelvis']/4}", pos=f"0 -{lengths_dict['Pelvis']} 0", euler="0 0 0", rgba=rgba_in)
+    ET.SubElement(pelvis, "geom", type="capsule", size=f"{lengths_dict['Pelvis']/2} {widths_dict['Pelvis']/2-lengths_dict['Pelvis']/4}", pos=f"0 -{lengths_dict['Pelvis']/2} 0", euler="0 0 0", rgba=rgba_in)
     ET.SubElement(pelvis, "inertial", mass=f"{mass_dict['Pelvis']}", pos=f"{com_pos_x_dict['Pelvis']} {com_pos_y_dict['Pelvis']} {com_pos_z_dict['Pelvis']}", fullinertia=f"{I11_dict['Pelvis']} {I22_dict['Pelvis']} {I33_dict['Pelvis']} {I12_dict['Pelvis']} {I13_dict['Pelvis']} {I23_dict['Pelvis']}")
 
     # Left thigh
