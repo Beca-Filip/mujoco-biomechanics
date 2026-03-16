@@ -168,7 +168,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(worldbody, "light", diffuse=".8 .8 .8", pos="0 0 3", dir="0 0 -1")
     ET.SubElement(mujoco, "option", gravity="0 0 -9.81")
 
-    thorax_gen_height = lengths_dict['Thorax'] + lengths_dict['Abdomen'] + lengths_dict['Pelvis'] + lengths_dict["Thigh"] + lengths_dict["Shank"] + {widths_dict["Foot"]/2} 
+    thorax_gen_height = lengths_dict['Thorax'] + lengths_dict['Abdomen'] + lengths_dict['Pelvis'] + lengths_dict["Thigh"] + lengths_dict["Shank"] + widths_dict["Foot"]/2 
 
     # Thorax as root segment
     thorax = ET.SubElement(worldbody, "body", name="thorax", pos=f"0 0 thorax_gen_height", euler="90 0 0")
