@@ -305,6 +305,10 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(right_hand, "geom", type="capsule", size=f"{widths_dict['Hand']/2} {lengths_dict['Hand']/2-widths_dict['Hand']/4}", pos=f"0 {-lengths_dict['Hand']/2} 0", euler="-90 0 0", rgba=rgba_in)
     ET.SubElement(right_hand, "inertial", mass=f"{mass_dict['Hand']}", pos=f"{com_pos_x_dict['Hand']} {com_pos_y_dict['Hand']} {com_pos_z_dict['Hand']}", fullinertia=f"{I11_dict['Hand']} {I22_dict['Hand']} {I33_dict['Hand']} {I12_dict['Hand']} {I13_dict['Hand']} {I23_dict['Hand']}")
 
+    # Keyframe
+    keyframe = ET.SubElement(mujoco, "keyframe")
+    ET.SubElement(keyframe, "key", name="tpose", qpos=f"0 0 {thorax_gen_height} 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 {1.57079632679} 0 0 0 {-1.57079632679} 0 0 0 0 0 0 0 0 0 0")
+
     variable_name_dict = {
         "thorax": thorax, 
         "head": head, 
