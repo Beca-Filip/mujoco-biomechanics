@@ -327,6 +327,25 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ]
     keyframe = ET.SubElement(mujoco, "keyframe")
     ET.SubElement(keyframe, "key", name="t-pose", qpos=" ".join(map(str, qpos_vals)))
+    qpos_vals1 = [
+        0, 0, thorax_gen_height, 0.7071, 0.7071, 0, 0, #thorax
+        0, 0, 0, #head
+        0, 0, 0, #abdomen
+        0, 0, 0, #pelvis
+        0, 0, 0, #left thigh
+        0, #left shank
+        0, 0, #left foot
+        0, 0, 0, #right thigh
+        0, #right shank
+        0, 0, #right foot
+        0, 0, 0, #left upper arm
+        0, #left forearm
+        0, 0, #left hand
+        0, 0, 0, #right upper arm
+        0, #right forearm
+        0, 0 #right hand
+    ]
+    ET.SubElement(keyframe, "key", name="i-pose", qpos=" ".join(map(str, qpos_vals1)))
 
     variable_name_dict = {
         "thorax": thorax, 
