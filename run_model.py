@@ -30,14 +30,49 @@ def compute_overview_camera(model, data, distance_scale):
 
     return center, distance
 
+# Build a combined XML string that includes all the provided model files as submodels
+def build_combined_xml(model_names, spacing):
+    asset_models = []
+    attached_models = []
+
+    for i, name in enumerate(model_names):
+        submodel_name = f"sub{i}"
+        prefix = f"m{i}_"
+
+        asset_models.append(
+            f'<model name="{submodel_name}" file="{name}.xml"/>'
+        )
+
+        attached_models.append(f"""
+        <frame pos="{i * spacing} 0 0">
+            <attach model="{submodel_name}" prefix="{prefix}"/>
+        </frame>
+        """)
+
+    return f"""
+    <mujoco model="combined_scene">
+        <asset>
+            {''.join(asset_models)}
+        </asset>
+        <worldbody>
+            {''.join(attached_models)}
+        </worldbody>
+    </mujoco>
+    """
 
 def main():
-    parser = argparse.ArgumentParser(description="Load and run a MuJoCo XML model.")
-    parser.add_argument("model_file", help="Path to the .xml model file to load")
+    parser = argparse.ArgumentParser(description="Load and run MuJoCo XML model.")
+    parser.add_argument("model_files", nargs="+", help="Path to the .xml model file to load")
     parser.add_argument(
         "--pause",
         action="store_true",
-        help="Load the model in the viewer without running the simulation",
+        help="Load the models in the viewer without running the simulation",
+    )
+    parser.add_argument(
+        "--spacing", "-s",
+        type=float,
+        default=1.5,
+        help="Spacing between loaded models on the x axis (default: 3)"
     )
     parser.add_argument(
         "--cam-azimuth", "-ca",
@@ -59,18 +94,19 @@ def main():
     )
     args = parser.parse_args()
 
-    model = mujoco.MjModel.from_xml_path(args.model_file)
+    combined_xml = build_combined_xml(args.model_files, args.spacing)
+
+    model = mujoco.MjModel.from_xml_string(combined_xml)
     data = mujoco.MjData(model)
 
-    # Set initial joint positions for the shoulders so that the model is in a T-pose
-    left_shoulder_x_id = model.joint("left_shoulder_x").id
-    right_shoulder_x_id = model.joint("right_shoulder_x").id
+    # Set initial joint positions for the shoulders so that all models are in a T-pose
+    for i, _ in enumerate(args.model_files):
+        left_name = f"m{i}_left_shoulder_x"
+        right_name = f"m{i}_right_shoulder_x"
 
-    left_shoulder_x_id_qpos = model.jnt_qposadr[left_shoulder_x_id]
-    right_shoulder_x_id_qpos = model.jnt_qposadr[right_shoulder_x_id]
+        data.joint(left_name).qpos[0] = 1.5707963
+        data.joint(right_name).qpos[0] = -1.5707963
 
-    data.qpos[left_shoulder_x_id_qpos] = 1.5707963 # 90 degrees in radians
-    data.qpos[right_shoulder_x_id_qpos] = -1.5707963 # -90 degrees in radians
     mujoco.mj_forward(model, data)
 
     # Compute a camera that sees the whole model
