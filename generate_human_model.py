@@ -305,7 +305,29 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(right_hand, "joint", name="right_wrist_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Hand']} {joint_limit_positive_z_dict['Hand']}")
     ET.SubElement(right_hand, "geom", type="capsule", size=f"{widths_dict['Hand']/2} {lengths_dict['Hand']/2-widths_dict['Hand']/4}", pos=f"0 {-lengths_dict['Hand']/2} 0", euler="-90 0 0", rgba=rgba_in)
     ET.SubElement(right_hand, "inertial", mass=f"{mass_dict['Hand']}", pos=f"{com_pos_x_dict['Hand']} {com_pos_y_dict['Hand']} {com_pos_z_dict['Hand']}", fullinertia=f"{I11_dict['Hand']} {I22_dict['Hand']} {I33_dict['Hand']} {I12_dict['Hand']} {I13_dict['Hand']} {I23_dict['Hand']}")
-    
+
+    # Keyframe
+    qpos_vals = [
+        0, 0, thorax_gen_height, 0.7071, 0.7071, 0, 0, #thorax
+        0, 0, 0, #head
+        0, 0, 0, #abdomen
+        0, 0, 0, #pelvis
+        0, 0, 0, #left thigh
+        0, #left shank
+        0, 0, #left foot
+        0, 0, 0, #right thigh
+        0, #right shank
+        0, 0, #right foot
+        1.57079632679, 0, 0, #left upper arm
+        0, #left forearm
+        0, 0, #left hand
+        -1.57079632679, 0, 0, #right upper arm
+        0, #right forearm
+        0, 0 #right hand
+    ]
+    keyframe = ET.SubElement(mujoco, "keyframe")
+    ET.SubElement(keyframe, "key", name="t-pose", qpos=" ".join(map(str, qpos_vals)))
+
     variable_name_dict = {
         "thorax": thorax, 
         "head": head, 
