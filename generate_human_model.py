@@ -172,6 +172,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(worldbody, "light", diffuse=".8 .8 .8", pos="0 0 3", dir="0 0 -1")
     ET.SubElement(mujoco, "option", gravity="0 0 -9.81")
 
+    # Calculate thorax generation height, abdomen length is not factored in as hip joint position is given from the start of the abdomen segment
     thorax_gen_height = widths_dict["Foot"]/2 + lengths_dict["Shank"] + lengths_dict["Thigh"] + special_joint_pos_y_dict['Hip'] + lengths_dict['Abdomen'] + lengths_dict['Thorax']
 
     # Thorax as root segment
@@ -304,11 +305,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(right_hand, "joint", name="right_wrist_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Hand']} {joint_limit_positive_z_dict['Hand']}")
     ET.SubElement(right_hand, "geom", type="capsule", size=f"{widths_dict['Hand']/2} {lengths_dict['Hand']/2-widths_dict['Hand']/4}", pos=f"0 {-lengths_dict['Hand']/2} 0", euler="-90 0 0", rgba=rgba_in)
     ET.SubElement(right_hand, "inertial", mass=f"{mass_dict['Hand']}", pos=f"{com_pos_x_dict['Hand']} {com_pos_y_dict['Hand']} {com_pos_z_dict['Hand']}", fullinertia=f"{I11_dict['Hand']} {I22_dict['Hand']} {I33_dict['Hand']} {I12_dict['Hand']} {I13_dict['Hand']} {I23_dict['Hand']}")
-
-    # Keyframe
-    keyframe = ET.SubElement(mujoco, "keyframe")
-    ET.SubElement(keyframe, "key", name="tpose", qpos=f"0 0 {thorax_gen_height} 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 {1.57079632679} 0 0 0 {-1.57079632679} 0 0 0 0 0 0 0 0 0 0")
-
+    
     variable_name_dict = {
         "thorax": thorax, 
         "head": head, 

@@ -62,6 +62,17 @@ def main():
     model = mujoco.MjModel.from_xml_path(args.model_file)
     data = mujoco.MjData(model)
 
+    # Set initial joint positions for the shoulders so that the model is in a T-pose
+    left_shoulder_x_id = model.joint("left_shoulder_x").id
+    right_shoulder_x_id = model.joint("right_shoulder_x").id
+
+    left_shoulder_x_id_qpos = model.jnt_qposadr[left_shoulder_x_id]
+    right_shoulder_x_id_qpos = model.jnt_qposadr[right_shoulder_x_id]
+
+    data.qpos[left_shoulder_x_id_qpos] = 1.5707963 # 90 degrees in radians
+    data.qpos[right_shoulder_x_id_qpos] = -1.5707963 # -90 degrees in radians
+    mujoco.mj_forward(model, data)
+
     # Compute a camera that sees the whole model
     center, distance = compute_overview_camera(model, data, distance_scale=args.cam_distance_scale)
 
