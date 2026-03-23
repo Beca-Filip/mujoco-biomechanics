@@ -80,7 +80,7 @@ def main():
     parser.add_argument(
         "--pause",
         action="store_true",
-        help="Load the models in the viewer without running the simulation",
+        help="Load the models in the viewer without running the simulation (no .xml at the end)",
     )
     parser.add_argument(
         "--spacing", "-s",
