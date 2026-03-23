@@ -83,6 +83,12 @@ def main():
         help="Load the models in the viewer without running the simulation (no .xml at the end)",
     )
     parser.add_argument(
+        "--file_name", "-fn",
+        type=str,
+        default="scene.xml",
+        help="Name of the output XML scene file (default: scene.xml)"
+    )
+    parser.add_argument(
         "--spacing", "-s",
         type=float,
         default=1.5,
@@ -115,6 +121,13 @@ def main():
     args = parser.parse_args()
 
     combined_xml = build_combined_xml(args.model_files, args.spacing, args.number_of_columns)
+
+    # Write the combined XML to a file
+    if not args.file_name.endswith(".xml"):
+        args.file_name += ".xml"
+
+    with open(args.file_name, "w", encoding="utf-8") as f:
+        f.write(combined_xml)
 
     model = mujoco.MjModel.from_xml_string(combined_xml)
     data = mujoco.MjData(model)
