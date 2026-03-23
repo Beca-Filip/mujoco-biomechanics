@@ -30,8 +30,8 @@ def compute_overview_camera(model, data, distance_scale):
 
     return center, distance
 
-# Build a combined XML string that includes all the provided model files as submodels
-def build_combined_xml(model_names, spacing):
+# Build a combined XML string that includes all the provided model files as submodels in a number of columns specified by the user
+def build_combined_xml(model_names, spacing, number_of_columns):
     asset_models = []
     attached_models = []
 
@@ -42,9 +42,10 @@ def build_combined_xml(model_names, spacing):
         asset_models.append(
             f'<model name="{submodel_name}" file="{name}.xml"/>'
         )
-
+        column_position = (i % number_of_columns) * spacing
+        row_position = (i // number_of_columns) * spacing
         attached_models.append(f"""
-        <frame pos="{i * spacing} 0 0">
+        <frame pos="{row_position} {column_position} 0">
             <attach model="{submodel_name}" prefix="{prefix}"/>
         </frame>
         """)
@@ -72,7 +73,13 @@ def main():
         "--spacing", "-s",
         type=float,
         default=1.5,
-        help="Spacing between loaded models on the x axis (default: 3)"
+        help="Spacing between loaded models on the x axis (default: 1.5)"
+    )
+    parser.add_argument(
+        "--number_of_columns", "-nc",
+        type=int,
+        default=1,
+        help="Nujmber of columns that the models are displayed in(default: 1)"
     )
     parser.add_argument(
         "--cam-azimuth", "-ca",
@@ -94,7 +101,7 @@ def main():
     )
     args = parser.parse_args()
 
-    combined_xml = build_combined_xml(args.model_files, args.spacing)
+    combined_xml = build_combined_xml(args.model_files, args.spacing, args.number_of_columns)
 
     model = mujoco.MjModel.from_xml_string(combined_xml)
     data = mujoco.MjData(model)
