@@ -168,7 +168,7 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(visual, "global", offwidth="2560", offheight="1440", elevation="-20", azimuth="120")
     contact = ET.SubElement(mujoco, "contact")
     worldbody = ET.SubElement(mujoco, "worldbody")
-    ET.SubElement(worldbody, "geom", type="plane", size="1 1 .1", rgba=".8 .8 .8 1")
+    #ET.SubElement(worldbody, "geom", type="plane", size="1 1 .1", rgba=".8 .8 .8 1") added to run_model.py not needed here
     ET.SubElement(worldbody, "light", diffuse=".8 .8 .8", pos="0 0 3", dir="0 0 -1")
     ET.SubElement(mujoco, "option", gravity="0 0 -9.81")
 
