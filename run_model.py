@@ -32,9 +32,6 @@ def compute_overview_camera(model, data, distance_scale):
 
 # Build a combined XML string that includes all the provided model files as submodels in a number of columns specified by the user
 def build_combined_xml(model_names, spacing, number_of_columns):
-    asset_models = []
-    attached_models = []
-
     num_models = len(model_names)
     num_rows = (num_models + number_of_columns - 1) // number_of_columns
 
@@ -44,35 +41,38 @@ def build_combined_xml(model_names, spacing, number_of_columns):
     center_x = max_x / 2
     center_y = max_y / 2
 
-    for i, name in enumerate(model_names):
-        submodel_name = f"sub{i}"
-        prefix = f"m{i}_"
-
-        asset_models.append(
-            f'<model name="{submodel_name}" file="{name}.xml"/>'
-        )
-        column_position = (i % number_of_columns) * spacing
-        row_position = (i // number_of_columns) * spacing
-        attached_models.append(f"""
-        <frame pos="{row_position} {column_position} 0">
-            <attach model="{submodel_name}" prefix="{prefix}"/>
-        </frame>
-        """)
-
-    return f"""
+    base_xml = f"""
     <mujoco model="combined_scene">
         <asset>
-            {''.join(asset_models)}
             <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="32" height="512"/>
             <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1="0.1 0.1 0.1" rgb2="0.9 0.9 0.9"/>
             <material  name="grid" texture="grid" texrepeat="1 1" texuniform="true" reflectance="0.2"/>
         </asset>
         <worldbody>
             <geom name="floor" type="plane" pos="{center_x} {center_y} 0" size="100 100 0.1" material="grid"/>
-            {''.join(attached_models)}
         </worldbody>
     </mujoco>
     """
+
+    parent = mujoco.MjSpec.from_string(base_xml)
+
+    for i, name in enumerate(model_names):
+        child = mujoco.MjSpec.from_file(f"{name}.xml")
+
+        # Remove the floor from the child model to avoid conflicts with the parent's floor
+        child_floor = child.geom("floor")
+        if child_floor is not None:
+            child.delete(child_floor)
+
+        column_position = (i % number_of_columns) * spacing
+        row_position = (i // number_of_columns) * spacing
+
+        frame = parent.worldbody.add_frame(pos=[row_position, column_position, 0])
+
+        parent.attach(child, frame=frame, prefix=f"m{i}_")
+    
+    parent.compile()
+    return parent.to_xml()
 
 def main():
     parser = argparse.ArgumentParser(description="Load and run MuJoCo XML model.")
