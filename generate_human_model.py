@@ -172,8 +172,10 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(worldbody, "light", diffuse=".8 .8 .8", pos="0 0 3", dir="0 0 -1")
     ET.SubElement(mujoco, "option", gravity="0 0 -9.81")
 
+    #calculate foot height based on foot length, temporary and used for testing
+    foot_height = lengths_dict["Foot"] / 4
     # Calculate thorax generation height, abdomen length is not factored in as hip joint position is given from the start of the abdomen segment
-    thorax_gen_height = widths_dict["Foot"]/2 + lengths_dict["Shank"] + lengths_dict["Thigh"] + special_joint_pos_y_dict['Hip'] + lengths_dict['Abdomen'] + lengths_dict['Thorax']
+    thorax_gen_height = foot_height + lengths_dict["Shank"] + lengths_dict["Thigh"] + special_joint_pos_y_dict['Hip'] + lengths_dict['Abdomen'] + lengths_dict['Thorax'] + 0.0001
 
     # Thorax as root segment
     thorax = ET.SubElement(worldbody, "body", name="thorax", pos=f"0 0 {thorax_gen_height}", euler="90 0 0")
@@ -247,7 +249,8 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(contact, "exclude", body1="left_shank", body2="left_foot")
     ET.SubElement(left_foot, "joint", name="left_ankle_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Foot']} {joint_limit_positive_y_dict['Foot']}")
     ET.SubElement(left_foot, "joint", name="left_ankle_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Foot']} {joint_limit_positive_z_dict['Foot']}")
-    ET.SubElement(left_foot, "geom", type="capsule", size=f"{widths_dict['Foot']/2} {lengths_dict['Foot']/2-widths_dict['Foot']/4}", pos = f"{lengths_dict['Foot']/2} 0 0", euler="0 90 0", rgba=rgba_in)
+    #ET.SubElement(left_foot, "geom", type="capsule", size=f"{widths_dict['Foot']/2} {lengths_dict['Foot']/2-widths_dict['Foot']/4}", pos = f"{lengths_dict['Foot']/2} 0 0", euler="0 90 0", rgba=rgba_in)
+    ET.SubElement(left_foot, "geom", type="box", size=f"{widths_dict['Foot']/2} {foot_height/2} {lengths_dict['Foot']/2}", pos = f"{lengths_dict['Foot']/2} {-foot_height/2} 0", euler="0 90 0", rgba=rgba_in)
     ET.SubElement(left_foot, "inertial", mass=f"{mass_dict['Foot']}", pos=f"{com_pos_x_dict['Foot']} {com_pos_y_dict['Foot']} {-com_pos_z_dict['Foot']}", fullinertia=f"{I11_dict['Foot']} {I22_dict['Foot']} {I33_dict['Foot']} {I12_dict['Foot']} {-I13_dict['Foot']} {-I23_dict['Foot']}")
 
     # Right foot
@@ -255,7 +258,8 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     ET.SubElement(contact, "exclude", body1="right_shank", body2="right_foot")
     ET.SubElement(right_foot, "joint", name="right_ankle_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Foot']} {joint_limit_positive_y_dict['Foot']}")
     ET.SubElement(right_foot, "joint", name="right_ankle_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Foot']} {joint_limit_positive_z_dict['Foot']}")
-    ET.SubElement(right_foot, "geom", type="capsule", size=f"{widths_dict['Foot']/2} {lengths_dict['Foot']/2-widths_dict['Foot']/4}", pos = f"{lengths_dict['Foot']/2} 0 0", euler="0 90 0", rgba=rgba_in)
+    #ET.SubElement(right_foot, "geom", type="capsule", size=f"{widths_dict['Foot']/2} {lengths_dict['Foot']/2-widths_dict['Foot']/4}", pos = f"{lengths_dict['Foot']/2} 0 0", euler="0 90 0", rgba=rgba_in)
+    ET.SubElement(right_foot, "geom", type="box", size=f"{widths_dict['Foot']/2} {foot_height/2} {lengths_dict['Foot']/2}", pos = f"{lengths_dict['Foot']/2} {-foot_height/2} 0", euler="0 90 0", rgba=rgba_in)
     ET.SubElement(right_foot, "inertial", mass=f"{mass_dict['Foot']}", pos=f"{com_pos_x_dict['Foot']} {com_pos_y_dict['Foot']} {com_pos_z_dict['Foot']}", fullinertia=f"{I11_dict['Foot']} {I22_dict['Foot']} {I33_dict['Foot']} {I12_dict['Foot']} {I13_dict['Foot']} {I23_dict['Foot']}")
 
     # Left upper arm
