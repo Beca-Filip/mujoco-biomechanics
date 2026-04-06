@@ -95,10 +95,16 @@ def main():
         help="Spacing between loaded models on the x axis (default: 1.5)"
     )
     parser.add_argument(
+        "--shoulder_angle", "-sa",
+        type=float,
+        default=1.5707963,
+        help="Shoulder angle in rad (default value for t pose)"
+    )
+    parser.add_argument(
         "--number_of_columns", "-nc",
         type=int,
         default=1,
-        help="Nujmber of columns that the models are displayed in(default: 1)"
+        help="Nujmber of columns that the models are displayed in (default: 1)"
     )
     parser.add_argument(
         "--cam-azimuth", "-ca",
@@ -137,8 +143,8 @@ def main():
         left_name = f"m{i}_left_shoulder_x"
         right_name = f"m{i}_right_shoulder_x"
 
-        data.joint(left_name).qpos[0] = 1.5707963
-        data.joint(right_name).qpos[0] = -1.5707963
+        data.joint(left_name).qpos[0] = args.shoulder_angle
+        data.joint(right_name).qpos[0] = -args.shoulder_angle
 
     mujoco.mj_forward(model, data)
 
