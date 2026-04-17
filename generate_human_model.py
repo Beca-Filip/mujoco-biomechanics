@@ -111,18 +111,19 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
         com_pos_z_dict[i] = position_z
 
     # Site positions loading and dicts
-    df_sites = pd.read_csv("site_positions.csv")
+    if sex == "male":
+        site_file_name = "site_positions_male.csv"
+    elif sex == "female":
+        site_file_name = "site_positions_female.csv"
+    df_sites = pd.read_csv(site_file_name)
 
     site_names = df_sites.iloc[:, 0]
-    site_segments = df_sites.iloc[:, 1]
-    site_specific = df_sites.iloc[:, 5]
+    site_specific = df_sites.iloc[:, 4]
 
-    site_x = df_sites.iloc[:, 2]
-    site_y = df_sites.iloc[:, 3]
-    site_z = df_sites.iloc[:, 4]
+    site_x = df_sites.iloc[:, 1] * length_scaling
+    site_y = df_sites.iloc[:, 2] * length_scaling
+    site_z = df_sites.iloc[:, 3] * length_scaling
 
-    # Site segments length dict
-    site_body_dict = dict(zip(site_names, site_segments))
     # Site specific dict
     site_specific_dict = dict(zip(site_names, site_specific))
 
@@ -130,19 +131,6 @@ def generate_human_model(filename : str, mass : float, height : float, sex : str
     site_x_dict = dict(zip(site_names, site_x))
     site_y_dict = dict(zip(site_names, site_y))
     site_z_dict = dict(zip(site_names, site_z))
-
-    for site in site_names:
-        segment_name = site_body_dict[site]
-        segment_length = lengths_dict[segment_name]
-        segment_width = widths_dict[segment_name]
-
-        fraction_x = float(site_x_dict[site]) / 100
-        fraction_y = float(site_y_dict[site]) / 100
-        fraction_z = float(site_z_dict[site]) / 100
-
-        site_x_dict[site] = fraction_x * segment_length
-        site_y_dict[site] = fraction_y * segment_length
-        site_z_dict[site] = fraction_z * segment_width
 
     # Shoulder and hip joint positions loading and dicts
     df = pd.read_csv(shoulder_hip_table)
