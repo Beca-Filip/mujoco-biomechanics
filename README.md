@@ -33,8 +33,3 @@ If you use this work in your research, please cite:
   url     = {https://github.com/becaphilippe/mujoco-biomechanics}
 }
 ```
-
-## Reference
-
-de Leva, P. (1996). Adjustments to Zatsiorsky-Seluyanov's segment inertia parameters.
-*Journal of Biomechanics*, 29(9), 1223–1230.
