@@ -30,14 +30,81 @@ def compute_overview_camera(model, data, distance_scale):
 
     return center, distance
 
+# Build a combined XML string that includes all the provided model files as submodels in a number of columns specified by the user
+def build_combined_xml(model_names, spacing, number_of_columns):
+    num_models = len(model_names)
+    num_rows = (num_models + number_of_columns - 1) // number_of_columns
+
+    max_x = (num_rows - 1) * spacing if num_rows > 0 else 0
+    max_y = (number_of_columns - 1) * spacing if number_of_columns > 0 else 0
+
+    center_x = max_x / 2
+    center_y = max_y / 2
+
+    base_xml = f"""
+    <mujoco model="combined_scene">
+        <asset>
+            <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="32" height="512"/>
+            <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1="0.1 0.1 0.1" rgb2="0.9 0.9 0.9"/>
+            <material  name="grid" texture="grid" texrepeat="1 1" texuniform="true" reflectance="0.2"/>
+        </asset>
+        <worldbody>
+            <geom name="floor" type="plane" pos="{center_x} {center_y} 0" size="100 100 0.1" material="grid"/>
+        </worldbody>
+    </mujoco>
+    """
+
+    parent = mujoco.MjSpec.from_string(base_xml)
+
+    for i, name in enumerate(model_names):
+        child = mujoco.MjSpec.from_file(f"{name}.xml")
+
+        # Remove the floor from the child model to avoid conflicts with the parent's floor
+        child_floor = child.geom("floor")
+        if child_floor is not None:
+            child.delete(child_floor)
+
+        column_position = (i % number_of_columns) * spacing
+        row_position = (i // number_of_columns) * spacing
+
+        frame = parent.worldbody.add_frame(pos=[row_position, column_position, 0])
+
+        parent.attach(child, frame=frame, prefix=f"m{i}_")
+    
+    parent.compile()
+    return parent.to_xml()
 
 def main():
-    parser = argparse.ArgumentParser(description="Load and run a MuJoCo XML model.")
-    parser.add_argument("model_file", help="Path to the .xml model file to load")
+    parser = argparse.ArgumentParser(description="Load and run MuJoCo XML model.")
+    parser.add_argument("model_files", nargs="+", help="Path to the .xml model file to load")
     parser.add_argument(
         "--pause",
         action="store_true",
-        help="Load the model in the viewer without running the simulation",
+        help="Load the models in the viewer without running the simulation (no .xml at the end)",
+    )
+    parser.add_argument(
+        "--file_name", "-fn",
+        type=str,
+        default="scene.xml",
+        help="Name of the output XML scene file (default: scene.xml)"
+    )
+    parser.add_argument(
+        "--spacing", "-s",
+        type=float,
+        default=1.5,
+        help="Spacing between loaded models on the x axis (default: 1.5)"
+    )
+    parser.add_argument(
+        "--shoulder_angle", "-sa",
+        type=float,
+        default=1.5707963,
+        help="Shoulder angle in rad (default value for t pose)"
+    )
+    parser.add_argument(
+        "--number_of_columns", "-nc",
+        type=int,
+        default=1,
+        help="Nujmber of columns that the models are displayed in (default: 1)"
     )
     parser.add_argument(
         "--cam-azimuth", "-ca",
@@ -59,8 +126,27 @@ def main():
     )
     args = parser.parse_args()
 
-    model = mujoco.MjModel.from_xml_path(args.model_file)
+    combined_xml = build_combined_xml(args.model_files, args.spacing, args.number_of_columns)
+
+    # Write the combined XML to a file
+    if not args.file_name.endswith(".xml"):
+        args.file_name += ".xml"
+
+    with open(args.file_name, "w", encoding="utf-8") as f:
+        f.write(combined_xml)
+
+    model = mujoco.MjModel.from_xml_string(combined_xml)
     data = mujoco.MjData(model)
+
+    # Set initial joint positions for the shoulders so that all models are in a T-pose
+    for i, _ in enumerate(args.model_files):
+        left_name = f"m{i}_left_shoulder_x"
+        right_name = f"m{i}_right_shoulder_x"
+
+        data.joint(left_name).qpos[0] = args.shoulder_angle
+        data.joint(right_name).qpos[0] = -args.shoulder_angle
+
+    mujoco.mj_forward(model, data)
 
     # Compute a camera that sees the whole model
     center, distance = compute_overview_camera(model, data, distance_scale=args.cam_distance_scale)
