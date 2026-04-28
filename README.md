@@ -30,6 +30,6 @@ If you use this work in your research, please cite:
   author  = {Be{\v{c}}anovi{\'c}, Filip and Mi{\v{s}}kovi{\'c}, Du{\v{s}}an and Nedeljkovi{\'c}, Kosta and Tepav{\v{c}}evi{\'c}, Marko},
   title   = {{mujoco-biomechanics}: Anthropometrically Scaled Human Models for {MuJoCo}},
   year    = {2026},
-  url     = {https://github.com/becaphilippe/mujoco-biomechanics}
+  url     = {https://github.com/Beca-Filip/mujoco-biomechanics}
 }
 ```
