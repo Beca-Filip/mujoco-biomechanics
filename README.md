@@ -26,7 +26,7 @@ python run_model.py subject.xml
 If you use this work in your research, please cite:
 
 ```bibtex
-@software{beca2026mujoco,
+@software{becanovic2026mujoco,
   author  = {Be{\v{c}}anovi{\'c}, Filip and Mi{\v{s}}kovi{\'c}, Du{\v{s}}an and Nedeljkovi{\'c}, Kosta and Tepav{\v{c}}evi{\'c}, Marko},
   title   = {{mujoco-biomechanics}: Anthropometrically Scaled Human Models for {MuJoCo}},
   year    = {2026},
