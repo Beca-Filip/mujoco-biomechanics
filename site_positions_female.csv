@@ -80,5 +80,5 @@ second_toe_tip_right,0.174,-0.054,0.009,right_foot
 second_toe_tip_left,0.174,-0.054,-0.009,left_foot
 centre_of_mass_foot_right,0.045,-0.036,0.006,right_foot
 centre_of_mass_foot_left,0.045,-0.036,-0.006,left_foot
-metatarsal_midpoint_right,0.88,0,0,right_foot
-metatarsal_midpoint_left,0.88,0,0,left_foot
+metatarsal_midpoint_right,0.088,0,0,right_foot
+metatarsal_midpoint_left,0.088,0,0,left_foot
