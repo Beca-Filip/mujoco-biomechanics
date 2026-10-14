@@ -1,6 +1,31 @@
-import pandas as pd
-import xml.etree.ElementTree as ET
 import argparse
+from pathlib import Path
+import xml.etree.ElementTree as ET
+
+from .data_loader import read_package_csv
+
+REFERENCE HEIGHT = {
+    "male": 1.77, 
+    "female": 1.61,
+}
+ANTHROPOMETRIC_TABLE = {
+    "male": "anthropometric_table_male.csv",
+    "female": "anthropometric_table_female.csv",
+}
+SHOULDER_HIP_TABLE = {
+    "male": "male_shoulder_hip.csv",
+    "female": "female_shoulder_hip.csv",
+}
+SITE_POSITION_TABLE = {
+    "male": "male_site_positions.csv",
+    "female": "female_site_positions.csv",
+}
+RGBA_COLOR = {
+    "male": "0.2 0.4 0.8",
+    "female": "0.9 0.4 0.6",
+}
+
+
 
 def generate_human_model(filename : str, mass : float, height : float, sex : str, alpha : float = 1.0):
     length_scaling = 1 # scaling coefficient - will be changed depending on subject height
