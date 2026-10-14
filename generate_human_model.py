@@ -25,24 +25,43 @@ RGBA_COLOR = {
     "female": "0.9 0.4 0.6",
 }
 
+def xml_output_path(filename: str | Path ) -> Path:
+    output_path = Path(filename)
 
+    if not output_path.name:
+        raise ValueError("Filename must not be empty")
+    if output_path.suffix.lower() != ".xml":
+        raise ValueError("Filename must have .xml extension")
+    if output_path.suffix == "":
+        return output_path.with_suffix(".xml")
 
-def generate_human_model(filename : str, mass : float, height : float, sex : str, alpha : float = 1.0):
-    length_scaling = 1 # scaling coefficient - will be changed depending on subject height
-    male_height = 1.77
-    female_height = 1.61
-    if sex == "male":
-        file_name = "anthropometric_table_male.csv"
-        shoulder_hip_table = "male_shoulder_hip.csv"
-        length_scaling = float(length_scaling / male_height)
-        rgba_in = f"0.2 0.4 0.8 {alpha}"
-    elif sex == "female":
-        file_name = "anthropometric_table_female.csv"
-        shoulder_hip_table = "female_shoulder_hip.csv"
-        length_scaling = float(length_scaling / female_height)
-        rgba_in = f"0.9 0.4 0.6 {alpha}"
-    length_scaling = length_scaling*float(height)
-    df = pd.read_csv(file_name)
+    return output_path
+
+def input_validation(mass: float, height: float, sex: str, alpha: float) -> None:
+    if mass <= 0:
+        raise ValueError("Mass must be more than 0kg.")
+    if height <= 0:
+        raise ValueError("Height must be more than 0m.")
+    if sex not in REFERENCE_HEIGHT:
+        raise ValueError(f"Sex must be either 'male' or 'female'.")
+    if not (0 <= alpha <= 1):
+        raise ValueError("Alpha must be between 0 and 1.")
+
+def generate_human_model(
+    filename : str | Path,
+    mass : float,
+    height : float,
+    sex : str,
+    alpha : float = 1.0,
+) -> str:
+    """Generate a scaled MuJoco human model based on anthropometric data."""
+    input_validation(mass=mass, height=height, sex=sex, alpha=alpha)
+
+    output_path = xml_output_path(filename)
+    length_scaling = float(height) / REFERENCE_HEIGHT[sex]
+    rgba_in = RGBA_COLOR[sex].format(alpha=alpha)
+    
+    df = read_package_csv(ANTHROPOMETRIC_TABLE[sex])
 
     # First column is segment names, second column is lengths
     segments = df.iloc[:, 0]
