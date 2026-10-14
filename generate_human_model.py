@@ -155,11 +155,7 @@ def generate_human_model(
         com_pos_z_dict[i] = position_z
 
     # Site positions loading and dicts
-    if sex == "male":
-        site_file_name = "site_positions_male.csv"
-    elif sex == "female":
-        site_file_name = "site_positions_female.csv"
-    df_sites = pd.read_csv(site_file_name)
+    df_sites = read_package_csv(SITE_POSITION_TABLE[sex])
 
     site_names = df_sites.iloc[:, 0]
     site_specific = df_sites.iloc[:, 4]
@@ -410,41 +406,43 @@ def generate_human_model(
     # Save to file
     tree = ET.ElementTree(mujoco)
     ET.indent(tree, space="  ", level=0)
-    tree.write(filename, encoding="utf-8", xml_declaration=True)
-    return filename
 
-if __name__ == "__main__":
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    tree.write(output_path, encoding="utf-8", xml_declaration=True)
+
+    return str(output_path)
+
+def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Generates a human MJCF based on sex, height, and mass, according to Dumas (2018)."
     )
-
     parser.add_argument(
-        "-o", "--output",
+        "-o",
+        "--output",
         default="human.xml",
         help="Output XML filename (default: human.xml)"
     )
-
     parser.add_argument(
-        "-m", "--mass",
+        "-m",
+        "--mass",
         required=True,
         type=float,
         help="Mass of the human who's MJCF we want to generate in kilogram"
     )
-
     parser.add_argument(
-        "-t", "--tall",
+        "-t",
+        "--tall",
         required=True,
         type=float,
         help="Height of the human who's MJCF we want to generate in m"
     )
-
     parser.add_argument(
-        "-s", "--sex",
+        "-s",
+        "--sex",
         required=True,
         choices=["male", "female"],
         help="Sex of the human who's MJCF we want to generate ('male' or 'female')"
     )
-
     parser.add_argument(
         "--alpha",
         required=False,
@@ -452,7 +450,18 @@ if __name__ == "__main__":
         default=1.0,
         help="The alpha value of the generated mesh (0: transparent, 1: opaque)"
     )
+    return parser
 
-    args = parser.parse_args()
+def main() -> None:
+    args = build_arg_parser().parse_args()
+    output_file = generate_human_model(
+        filename=args.output,
+        mass=args.mass,
+        height=args.tall,
+        sex=args.sex,
+        alpha=args.alpha,
+    )
+    print(f"Generated human model saved to {output_file}")
 
-    generate_human_model(filename=args.output, mass=args.mass, height=args.tall, sex=args.sex, alpha=args.alpha)
+if __name__ == "__main__":
+    main()
