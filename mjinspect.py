@@ -26,11 +26,23 @@ def print_model(model: MjModel) -> None:
     for i in range(model.nsite):
         print(f"\tSite {i}: {model.site(i).name}")
 
-if __name__ == "__main__":
+def main() -> None:
     parser = argparse.ArgumentParser(description="Inspect a MuJoCo model")
-    parser.add_argument("model_path", help="Path to the MuJoCo model XML file")
+    parser.add_argument(
+        "model_path",
+        help="Path to the MuJoCo model XML file"
+    )
 
     args = parser.parse_args()
 
+    model_path = Path(args.model_path)
+    if not model_path.is_file():
+        parser.error(
+            f"Model file does not exist: {model_path}"
+        )
+
     model = mj.MjModel.from_xml_path(args.model_path)
     print_model(model)
+
+if __name__ == "__main__":
+    main()
