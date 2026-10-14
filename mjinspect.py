@@ -1,12 +1,13 @@
 import mujoco as mj
 from mujoco import MjModel
 import argparse
+from pathlib import Path
 
 mjJointTypeToString = {
-    0: "free",
-    1: "ball",
-    2: "slide",
-    3: "hinge",
+    int(mj.mjtJoint.mjJNT_FREE): "free",
+    int(mj.mjtJoint.mjJNT_BALL): "ball",
+    int(mj.mjtJoint.mjJNT_SLIDE): "slide",
+    int(mj.mjtJoint.mjJNT_HINGE): "hinge",
 }
 
 def print_model(model: MjModel) -> None:
