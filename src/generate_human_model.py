@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 
 from .data_loader import read_package_csv
 
-REFERENCE HEIGHT = {
+REFERENCE_HEIGHT = {
     "male": 1.77, 
     "female": 1.61,
 }
