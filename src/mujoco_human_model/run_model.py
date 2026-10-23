@@ -44,15 +44,28 @@ def compute_overview_camera(model: mujoco.MjModel, data: mujoco.MjData, distance
     return center, distance
 
 # Build a combined XML string that includes all the provided model files as submodels in a number of columns specified by the user
-def build_combined_xml(model_names, spacing, number_of_columns):
-    num_models = len(model_names)
+def build_combined_xml(model_files: Sequence[str | Path], spacing: float=1.5, number_of_columns: int=1) -> str:
+    """Combine multiple MuJoCo XML models into a single shared scene with specified spacing and number of columns."""
+    
+    if not model_files:
+        raise ValueError("No model files provided.")
+    if spacing <= 0:
+        raise ValueError("Spacing must be greater than 0.")
+    if number_of_columns < 1:
+        raise ValueError("Number of columns must be at least 1.")
+
+    paths = [normalise_xml_input_path(path) for path in model_files]
+    missing = [path for path in paths if not path.is_file()]
+    if missing:
+        missing_text = ", ".join(str(path) for path in missing)
+        raise FileNotFoundError(f"Model file(s) not found: {missing_text}")
+    
+    num_models = len(paths)
     num_rows = (num_models + number_of_columns - 1) // number_of_columns
-
-    max_x = (num_rows - 1) * spacing if num_rows > 0 else 0
-    max_y = (number_of_columns - 1) * spacing if number_of_columns > 0 else 0
-
-    center_x = max_x / 2
-    center_y = max_y / 2
+    max_x = (num_rows - 1) * spacing
+    max_y = (min(num_models, number_of_columns) - 1) * spacing
+    center_x = max_x / 2.0
+    center_y = max_y / 2.0
 
     base_xml = f"""
     <mujoco model="combined_scene">
