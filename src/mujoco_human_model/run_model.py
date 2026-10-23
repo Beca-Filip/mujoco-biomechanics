@@ -111,7 +111,48 @@ def set_joint_qpos(model: mujoco.MjModel, data: mujoco.MjData, joint_name: str, 
     data.qpos[qpos_address] = qpos_value
     return True
 
+def scene_viewer(combined_xml: str, model_count: int, shoulder_angle: float, paused: bool, cam_azimuth: float, cam_elevation: float, cam_distance_scale: float): -> None:
+    model = mujoco.MjModel.from_xml_string(combined_xml)
+    data = mujoco.MjData(model)
 
+    for i in range(model_count):
+        left_name = f"m{i}_left_shoulder_x"
+        right_name = f"m{i}_right_shoulder_x"
+        left_set = set_joint_qpos(model, data, left_name, shoulder_angle)
+        right_set = set_joint_qpos(model, data, right_name, -shoulder_angle
+        if not (left_set and right_set):
+            print(f"Warning: Could not set shoulder angles for model {i}. Joint names may not match expected format.")
+
+    mujoco.mj_forward(model, data)
+    center, distance = compute_overview_camera(model, data, distance_scale=cam_distance_scale)
+
+    simulation_paused = paused
+
+    def key_callback(keycode: int): -> None:
+        nonlocal simulation_paused
+        if keycode == 32:  # spacebar toggles pause
+            simulation_paused = not simulation_paused
+
+    with mujoco.viewer.launch_passive(model, data, key_callback=key_callback) as viewer:
+        with viewer.lock():
+            viewer.cam.type = mujoco.mjtCamera.mjCAMERA_FREE
+            viewer.cam.lookat[:] = center
+            viewer.cam.distance = distance
+            viewer.cam.azimuth = cam_azimuth
+            viewer.cam.elevation = cam_elevation
+
+        while viewer.is_running():
+            step_start = time.time()
+            if not simulation_paused:
+                mujoco.mj_step(model, data)
+            viewer.sync()
+
+            if simulation_paused:
+                time.sleep(0.01)
+            else:
+                remaining_time = model.opt.timestep - (time.time() - step_start)
+                if remaining_time > 0:
+                    time.sleep(remaining_time)
 
 def main():
     parser = argparse.ArgumentParser(description="Load and run MuJoCo XML model.")
