@@ -155,18 +155,31 @@ def scene_viewer(combined_xml: str, model_count: int, shoulder_angle: float, pau
                     time.sleep(remaining_time)
 
 def build_argument_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Load and run MuJoCo XML model.")
-    parser.add_argument("model_files", nargs="+", help="Path to the .xml model file to load")
+    parser = argparse.ArgumentParser(description="Build a combined MuJoCo scene from multiple XML files, load and run models and optionally pause and save them.")
+    parser.add_argument(
+        "model_files",
+        nargs="+",
+        help="Path to the .xml model file to load",
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        "--file-name",
+        "--file_name",
+        "-fn",
+        dest="output",
+        default="scene.xml",
+        help="Output scene XML file (default: scene.xml).",
+    )
+    parser.add_argument(
+        "--save-only",
+        action="store_true",
+        help="Save the combined XML without opening the viewer.",
+    )
     parser.add_argument(
         "--pause",
         action="store_true",
         help="Load the models in the viewer without running the simulation (no .xml at the end)",
-    )
-    parser.add_argument(
-        "--file_name", "-fn",
-        type=str,
-        default="scene.xml",
-        help="Name of the output XML scene file (default: scene.xml)"
     )
     parser.add_argument(
         "--spacing", "-s",
@@ -175,36 +188,45 @@ def build_argument_parser() -> argparse.ArgumentParser:
         help="Spacing between loaded models on the x axis (default: 1.5)"
     )
     parser.add_argument(
-        "--shoulder_angle", "-sa",
+        "-sa",
+        "--shoulder-angle",
+        "--shoulder_angle",
+        dest="shoulder_angle",
         type=float,
         default=1.5707963,
-        help="Shoulder angle in rad (default value for t pose)"
+        help="Initial shoulder angle in radians (default: T-pose).",
     )
     parser.add_argument(
-        "--number_of_columns", "-nc",
+        "-nc",
+        "--number-of-columns",
+        "--number_of_columns",
+        dest="number_of_columns",
         type=int,
         default=1,
-        help="Nujmber of columns that the models are displayed in (default: 1)"
+        help="Number of model columns (default: 1).",
     )
     parser.add_argument(
-        "--cam-azimuth", "-ca",
+        "-ca",
+        "--cam-azimuth",
         type=float,
-        default=180.,
-        help="Azimuth of the viewer's camera (default: 0 degrees)"
+        default=180.0,
+        help="Viewer camera azimuth in degrees (default: 180).",
     )
     parser.add_argument(
-        "--cam-elevation", "-ce",
+        "-ce",
+        "--cam-elevation",
         type=float,
-        default=-35.,
-        help="Elevation of the viewer's camera (default: -35 degrees)"
+        default=-35.0,
+        help="Viewer camera elevation in degrees (default: -35).",
     )
     parser.add_argument(
-        "--cam-distance-scale", "-cds",
+        "-cds",
+        "--cam-distance-scale",
         type=float,
-        default=2.,
-        help="Distance scaling of the viewer's camera (default: 2; scaling=1 whole mesh is barely seen)"
+        default=2.0,
+        help="Viewer camera distance multiplier (default: 2).",
     )
-    args = parser.parse_args()
+    return parser
 
 
 if __name__ == "__main__":
