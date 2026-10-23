@@ -82,23 +82,25 @@ def build_combined_xml(model_files: Sequence[str | Path], spacing: float=1.5, nu
 
     parent = mujoco.MjSpec.from_string(base_xml)
 
-    for i, name in enumerate(model_names):
-        child = mujoco.MjSpec.from_file(f"{name}.xml")
-
-        # Remove the floor from the child model to avoid conflicts with the parent's floor
+    for index, model_path in enumerate(paths):
+        child = mujoco.MjSpec.from_file(str(model_path))
         child_floor = child.geom("floor")
         if child_floor is not None:
             child.delete(child_floor)
 
-        column_position = (i % number_of_columns) * spacing
-        row_position = (i // number_of_columns) * spacing
-
-        frame = parent.worldbody.add_frame(pos=[row_position, column_position, 0])
-
-        parent.attach(child, frame=frame, prefix=f"m{i}_")
+        column_position = (index % number_of_columns) * spacing
+        row_position = (index // number_of_columns) * spacing
+        frame = parent.worldbody.add_frame(pos=[row_position, column_position, 0.0])
+        parent.attach(child, frame=frame, prefix=f"m{index}_")
     
     parent.compile()
     return parent.to_xml()
+
+def save_combined_scene(xml: str, output_file: str | Path) -> Path:
+    output_path = normalise_xml_output_path(output_file)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(xml, encoding="utf-8")
+    return output_path
 
 def main():
     parser = argparse.ArgumentParser(description="Load and run MuJoCo XML model.")
