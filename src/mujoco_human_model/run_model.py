@@ -102,6 +102,17 @@ def save_combined_scene(xml: str, output_file: str | Path) -> Path:
     output_path.write_text(xml, encoding="utf-8")
     return output_path
 
+def set_joint_qpos(model: mujoco.MjModel, data: mujoco.MjData, joint_name: str, qpos_value: float) -> bool:
+    joint_id = mujoco.joint_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
+    if joint_id < 0:
+        return False
+
+    qpos_address = (model.jnt_qposadr[joint_id])
+    data.qpos[qpos_address] = qpos_value
+    return True
+
+
+
 def main():
     parser = argparse.ArgumentParser(description="Load and run MuJoCo XML model.")
     parser.add_argument("model_files", nargs="+", help="Path to the .xml model file to load")
