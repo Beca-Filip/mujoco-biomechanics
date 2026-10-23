@@ -26,26 +26,21 @@ def normalise_xml_output_path(file_name: str | Path) -> Path:
         raise ValueError(f"Invalid output file extension: {path.suffix}. Expected .xml")
     return path
 
-def compute_overview_camera(model, data, distance_scale):
+def compute_overview_camera(model: mujoco.MjModel, data: mujoco.MjData, distance_scale: float) -> tuple[np.ndarray, float]:
     """Compute camera parameters that frame the entire model."""
+    if distance_scale <= 0:
+        raise ValueError("distance_scale must be greater than 0")
+    
     mujoco.mj_forward(model, data)
+    positions = [data.xpos[i].copy() for i in range(model.nbody)]
+    positions.extend(data.geom_xpos[i].copy() for i in range(model.ngeom))
+    positions_array = np.asarray(positions)
 
-    # Collect all body and geom positions
-    positions = []
-    for i in range(model.nbody):
-        positions.append(data.xpos[i].copy())
-    for i in range(model.ngeom):
-        positions.append(data.geom_xpos[i].copy())
-
-    positions = np.array(positions)
-
-    # Center the camera on the midpoint of all positions
-    center = (positions.min(axis=0) + positions.max(axis=0)) / 2.0
-
-    # Distance: enough to see the full extent of the model
-    extent = np.linalg.norm(positions.max(axis=0) - positions.min(axis=0))
+    minimum = np.min(positions_array, axis=0)
+    maximum = np.max(positions_array, axis=0)
+    center = (minimum + maximum) / 2.0
+    extent = np.linalg.norm(maximum - minimum)
     distance = max(extent * distance_scale, 1.0)
-
     return center, distance
 
 # Build a combined XML string that includes all the provided model files as submodels in a number of columns specified by the user
