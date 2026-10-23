@@ -228,6 +228,23 @@ def build_argument_parser() -> argparse.ArgumentParser:
     )
     return parser
 
+def main() -> None:
+    args = build_argument_parser().parse_args()
+    combined_xml = build_combined_xml(model_files=args.model_files, spacing=args.spacing, number_of_columns=args.number_of_columns)
+    output_path = save_combined_scene(combined_xml, args.output)
+
+    if args.save_only:
+        return
+
+    scene_viewer(
+        combined_xml=combined_xml,
+        model_count=len(args.model_files),
+        shoulder_angle=args.shoulder_angle,
+        paused=args.pause,
+        cam_azimuth=args.cam_azimuth,
+        cam_elevation=args.cam_elevation,
+        cam_distance_scale=args.cam_distance_scale
+    )
 
 if __name__ == "__main__":
     main()
