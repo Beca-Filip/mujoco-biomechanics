@@ -18,7 +18,7 @@ def normalise_xml_input_path(model_file: str | Path) -> Path:
         raise ValueError(f"Invalid model file extension: {path.suffix}. Expected .xml")
     return path
 
-def normalise_xml_output_path(file_name: str | Path) -> Path:
+def normalise_xml_output_path(output_file: str | Path) -> Path:
     path = Path(output_file)
     if path.suffix == "":
         path = path.with_suffix(".xml")
@@ -111,7 +111,7 @@ def set_joint_qpos(model: mujoco.MjModel, data: mujoco.MjData, joint_name: str, 
     data.qpos[qpos_address] = qpos_value
     return True
 
-def scene_viewer(combined_xml: str, model_count: int, shoulder_angle: float, paused: bool, cam_azimuth: float, cam_elevation: float, cam_distance_scale: float): -> None:
+def scene_viewer(combined_xml: str, model_count: int, shoulder_angle: float, paused: bool, cam_azimuth: float, cam_elevation: float, cam_distance_scale: float) -> None:
     model = mujoco.MjModel.from_xml_string(combined_xml)
     data = mujoco.MjData(model)
 
@@ -119,7 +119,7 @@ def scene_viewer(combined_xml: str, model_count: int, shoulder_angle: float, pau
         left_name = f"m{i}_left_shoulder_x"
         right_name = f"m{i}_right_shoulder_x"
         left_set = set_joint_qpos(model, data, left_name, shoulder_angle)
-        right_set = set_joint_qpos(model, data, right_name, -shoulder_angle
+        right_set = set_joint_qpos(model, data, right_name, -shoulder_angle)
         if not (left_set and right_set):
             print(f"Warning: Could not set shoulder angles for model {i}. Joint names may not match expected format.")
 
@@ -128,7 +128,7 @@ def scene_viewer(combined_xml: str, model_count: int, shoulder_angle: float, pau
 
     simulation_paused = paused
 
-    def key_callback(keycode: int): -> None:
+    def key_callback(keycode: int) -> None:
         nonlocal simulation_paused
         if keycode == 32:  # spacebar toggles pause
             simulation_paused = not simulation_paused
