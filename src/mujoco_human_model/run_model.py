@@ -1,12 +1,30 @@
 # Launch MuJoCo viewer for testing XML models
 
 import argparse
+import sys
 import time
+from pathlib import Path
+from typing import Sequence
 
 import mujoco
 import mujoco.viewer
 import numpy as np
 
+def normalise_xml_input_path(model_file: str | Path) -> Path:
+    path = Path(model_file)
+    if path.suffix == "":
+        path = path.with_suffix(".xml")
+    elif path.suffix.lower() != ".xml":
+        raise ValueError(f"Invalid model file extension: {path.suffix}. Expected .xml")
+    return path
+
+def normalise_xml_output_path(file_name: str | Path) -> Path:
+    path = Path(output_file)
+    if path.suffix == "":
+        path = path.with_suffix(".xml")
+    elif path.suffix.lower() != ".xml":
+        raise ValueError(f"Invalid output file extension: {path.suffix}. Expected .xml")
+    return path
 
 def compute_overview_camera(model, data, distance_scale):
     """Compute camera parameters that frame the entire model."""
