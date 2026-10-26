@@ -173,7 +173,7 @@ def generate_human_model(
     site_z_dict = dict(zip(site_names, site_z))
 
     # Shoulder and hip joint positions loading and dicts
-    df = pd.read_csv(shoulder_hip_table)
+    df = read_package_csv(SHOULDER_HIP_TABLE[sex])
     special_joint_name = df.iloc[:, 0]
     special_joint_pos_x = df.iloc[:, 1] * length_scaling
     special_joint_pos_y = df.iloc[:, 2] * length_scaling
