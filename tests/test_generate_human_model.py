@@ -18,7 +18,7 @@ def test_generate_model_creates_compilable_xml(
 ) -> None:
     output = Path(
         generate_human_model(
-            filename=tmp_path / f"{sex}_model",
+            filename=tmp_path / f"{sex}_model.xml",
             mass=mass,
             height=height,
             sex=sex,

@@ -33,8 +33,8 @@ def test_build_combined_xml_and_save(tmp_path: Path) -> None:
     compiled = mujoco.MjModel.from_xml_string(xml)
     assert compiled.nbody >= 3
     assert compiled.geom("floor").id >= 0
-    assert compiled.geom("m0_floor") is None
-    assert compiled.geom("m1_floor") is None
+    assert mujoco.mj_name2id(compiled, mujoco.mjtObj.mjOBJ_GEOM, "m0_floor") == -1
+    assert mujoco.mj_name2id(compiled, mujoco.mjtObj.mjOBJ_GEOM, "m1_floor") == -1
 
     output = save_combined_scene(xml, tmp_path / "scene")
     assert output.name == "scene.xml"

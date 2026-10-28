@@ -17,12 +17,12 @@ SHOULDER_HIP_TABLE = {
     "female": "female_shoulder_hip.csv",
 }
 SITE_POSITION_TABLE = {
-    "male": "male_site_positions.csv",
-    "female": "female_site_positions.csv",
+    "male": "site_positions_male.csv",
+    "female": "site_positions_female.csv",
 }
 RGBA_COLOR = {
-    "male": "0.2 0.4 0.8",
-    "female": "0.9 0.4 0.6",
+    "male": "0.2 0.4 0.8 {alpha}",
+    "female": "0.9 0.4 0.6 {alpha}",
 }
 
 def xml_output_path(filename: str | Path ) -> Path:
@@ -61,7 +61,7 @@ def generate_human_model(
     length_scaling = float(height) / REFERENCE_HEIGHT[sex]
     rgba_in = RGBA_COLOR[sex].format(alpha=alpha)
     
-    df = read_package_csv(ANTHROPOMETRIC_TABLE[sex])
+    df = load_csv_data(ANTHROPOMETRIC_TABLE[sex])
 
     # First column is segment names, second column is lengths
     segments = df.iloc[:, 0]
@@ -155,7 +155,7 @@ def generate_human_model(
         com_pos_z_dict[i] = position_z
 
     # Site positions loading and dicts
-    df_sites = read_package_csv(SITE_POSITION_TABLE[sex])
+    df_sites = load_csv_data(SITE_POSITION_TABLE[sex])
 
     site_names = df_sites.iloc[:, 0]
     site_specific = df_sites.iloc[:, 4]
@@ -173,7 +173,7 @@ def generate_human_model(
     site_z_dict = dict(zip(site_names, site_z))
 
     # Shoulder and hip joint positions loading and dicts
-    df = read_package_csv(SHOULDER_HIP_TABLE[sex])
+    df = load_csv_data(SHOULDER_HIP_TABLE[sex])
     special_joint_name = df.iloc[:, 0]
     special_joint_pos_x = df.iloc[:, 1] * length_scaling
     special_joint_pos_y = df.iloc[:, 2] * length_scaling
@@ -189,7 +189,7 @@ def generate_human_model(
     # print("y ", site_y_dict)
     # print("z ", site_z_dict)
 
-    mujoco = ET.Element("mujoco", model=filename.replace(".xml", ""))
+    mujoco = ET.Element("mujoco", model=output_path.stem)
     visual = ET.SubElement(mujoco, "visual")
     ET.SubElement(visual, "map", force="0.1", zfar="30")
     ET.SubElement(visual, "rgba", haze="0.15 0.25 0.35 1")
