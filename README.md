@@ -114,21 +114,6 @@ python -m twine check dist/*
 python scripts/verify_distribution.py dist
 ```
 
-## TestPyPI
-
-Upload:
-
-```bash
-python -m twine upload --repository testpypi dist/*
-```
-
-In a clean environment, install runtime dependencies from PyPI and the package
-itself from TestPyPI without resolving dependencies from the test index:
-
-```bash
-python -m pip install "mujoco>=3.3.4" "numpy>=1.26" "pandas>=2.0"
-python -m pip install --index-url https://test.pypi.org/simple/ --no-deps mujoco-human-model
-```
 
 ## License
 
