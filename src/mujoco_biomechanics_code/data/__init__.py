@@ -1,1 +1,1 @@
-"""Antropometric data tables""""
+"""Antropometric data tables"""
