@@ -2,3 +2,15 @@
 *.xlsx
 .env
 .venv
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+.idea/
+.vscode/
+!tests/fixtures/*.xml
