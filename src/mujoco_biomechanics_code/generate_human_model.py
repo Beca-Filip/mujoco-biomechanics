@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
-from .data_loader import read_package_csv
+from .data_loader import load_csv_data
 
 REFERENCE_HEIGHT = {
     "male": 1.77, 
