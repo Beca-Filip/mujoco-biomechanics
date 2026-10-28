@@ -3,7 +3,7 @@ from pathlib import Path
 import mujoco
 import pytest
 
-from mujoco_biomechanics_code.run_model import (
+from mujoco_biomechanics.run_model import (
     build_combined_xml,
     normalise_xml_input_path,
     save_combined_scene,

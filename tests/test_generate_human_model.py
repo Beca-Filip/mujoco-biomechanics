@@ -3,7 +3,7 @@ from pathlib import Path
 import mujoco
 import pytest
 
-from mujoco_biomechanics_code.generate_human_model import generate_human_model
+from mujoco_biomechanics.generate_human_model import generate_human_model
 
 
 @pytest.mark.parametrize(

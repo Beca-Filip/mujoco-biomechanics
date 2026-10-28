@@ -7,9 +7,9 @@ import pytest
 @pytest.mark.parametrize(
     "module",
     [
-        "mujoco_biomechanics_code.generate_human_model",
-        "mujoco_biomechanics_code.mjinspect",
-        "mujoco_biomechanics_code.run_model",
+        "mujoco_biomechanics.generate_human_model",
+        "mujoco_biomechanics.mjinspect",
+        "mujoco_biomechanics.run_model",
     ],
 )
 def test_module_help(module: str) -> None:

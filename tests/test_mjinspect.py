@@ -1,6 +1,6 @@
 import mujoco
 
-from mujoco_biomechanics_code.mjinspect import inspect_model
+from mujoco_biomechanics.mjinspect import inspect_model
 
 
 def test_inspect_model_returns_expected_sections() -> None:

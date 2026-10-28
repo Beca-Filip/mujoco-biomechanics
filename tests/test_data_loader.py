@@ -2,8 +2,8 @@ from importlib.resources import files
 
 import pytest
 
-from mujoco_biomechanics_code import data
-from mujoco_biomechanics_code.data_loader import load_csv_data
+from mujoco_biomechanics import data
+from mujoco_biomechanics.data_loader import load_csv_data
 
 
 EXPECTED_TABLES = {
