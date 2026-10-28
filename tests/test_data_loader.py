@@ -24,11 +24,11 @@ def test_all_expected_tables_are_packaged() -> None:
 
 @pytest.mark.parametrize("file_name", sorted(EXPECTED_TABLES))
 def test_every_packaged_table_can_be_loaded(file_name: str) -> None:
-    frame = read_package_csv(file_name)
+    frame = load_csv_data(file_name)
     assert not frame.empty
 
 
 @pytest.mark.parametrize("bad_name", ["../table.csv", "data/table.csv", "table.txt", ""])
 def test_invalid_resource_names_are_rejected(bad_name: str) -> None:
     with pytest.raises(ValueError):
-        read_package_csv(bad_name)
+        load_csv_data(bad_name)
