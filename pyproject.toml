@@ -42,13 +42,13 @@ dev = [
 Homepage = "https://github.com/Beca-Filip/mujoco-biomechanics"
 Repository = "https://github.com/Beca-Filip/mujoco-biomechanics"
 [project.scripts]
-mujoco-biomechanics-generate = "mujoco_biomechanics_code.generate_human_model:main"
-mujoco-biomechanics-inspect = "mujoco_biomechanics_code.mjinspect:main"
-mujoco-biomechanics-run-scene = "mujoco_biomechanics_code.run_model:main"
+mjb-generate = "mujoco_biomechanics.generate_human_model:main"
+mjb-inspect = "mujoco_biomechanics.mjinspect:main"
+mjb-run-scene = "mujoco_biomechanics.run_model:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 [tool.setuptools.package-data]
-"mujoco_biomechanics_code.data" = ["*.csv"]
+"mujoco_biomechanics.data" = ["*.csv"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
