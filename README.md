@@ -23,11 +23,11 @@ python -m pip install mujoco-biomechanics
 ## Generate a model
 
 ```bash
-mujoco-biomechanics-generate --mass 75 --height 1.82 --sex male --output male.xml
+mujoco-biomechanics-generate --mass 75 --tall 1.82 --sex male --output male.xml
 ```
 
 ```bash
-mujoco-biomechanics-generate --mass 60 --height 1.68 --sex female --alpha 0.8 --output female.xml
+mujoco-biomechanics-generate --mass 60 --tall 1.68 --sex female --alpha 0.8 --output female.xml
 ```
 
 ## Inspect a model
