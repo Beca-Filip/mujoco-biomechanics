@@ -1,6 +1,6 @@
 # mujoco-biomechanics
 
-A Python tool for generating anatomically scaled human musculoskeletal models for the [MuJoCo](https://mujoco.org/) physics simulator.
+A Python tool for generating anatomically scaled human skeletal models for the [MuJoCo](https://mujoco.org/) physics simulator.
 
 Given a subject's **mass**, **height**, and **sex**, the generator produces a full-body MuJoCo XML model with:
 
@@ -23,30 +23,30 @@ python -m pip install mujoco-biomechanics
 ## Generate a model
 
 ```bash
-mujoco-biomechanics-generate --mass 75 --tall 1.82 --sex male --output male.xml
+mjb-generate --mass 75 --tall 1.82 --sex male --output male.xml
 ```
 
 ```bash
-mujoco-biomechanics-generate --mass 60 --tall 1.68 --sex female --alpha 0.8 --output female.xml
+mjb-generate --mass 60 --tall 1.68 --sex female --alpha 0.8 --output female.xml
 ```
 
 ## Inspect a model
 
 ```bash
-mujoco-biomechanics-inspect male.xml
+mjb-inspect male.xml
 ```
 ## Build a combined scene
 
 Save without opening the viewer:
 
 ```bash
-mujoco-biomechanics-run-scene male.xml female.xml --number-of-columns 2 --spacing 1.5 --output scene.xml --save-only
+mjb-run-scene male.xml female.xml --number-of-columns 2 --spacing 1.5 --output scene.xml --save-only
 ```
 
 Save and open the viewer:
 
 ```bash
-mujoco-biomechanics-run-scene male.xml female.xml --number-of-columns 2 --spacing 1.5 --output scene.xml
+mjb-run-scene male.xml female.xml --number-of-columns 2 --spacing 1.5 --output scene.xml
 ```
 
 Press Space in the viewer to pause or resume simulation.
@@ -56,13 +56,13 @@ Press Space in the viewer to pause or resume simulation.
 MuJoCo's passive viewer must be started through `mjpython` on macOS:
 
 ```bash
-mjpython -m mujoco_biomechanics_code.run_model male.xml female.xml --output scene.xml
+mjpython -m mujoco_biomechanics.run_model male.xml female.xml --output scene.xml
 ```
 
 ## Python API
 
 ```python
-from mujoco_biomechanics_code.generate_human_model import generate_human_model
+from mujoco_biomechanics.generate_human_model import generate_human_model
 
 output = generate_human_model(
     filename="human.xml",
