@@ -3,7 +3,7 @@ from importlib.resources import files
 import pytest
 
 from mujoco_biomechanics_code import data
-from mujoco_biomechanics_code.data_loader import read_package_csv
+from mujoco_biomechanics_code.data_loader import load_csv_data
 
 
 EXPECTED_TABLES = {
