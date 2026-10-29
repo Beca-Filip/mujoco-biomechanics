@@ -103,7 +103,7 @@ def save_combined_scene(xml: str, output_file: str | Path) -> Path:
     return output_path
 
 def set_joint_qpos(model: mujoco.MjModel, data: mujoco.MjData, joint_name: str, qpos_value: float) -> bool:
-    joint_id = mujoco.joint_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
+    joint_id = mujoco.mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
     if joint_id < 0:
         return False
 
