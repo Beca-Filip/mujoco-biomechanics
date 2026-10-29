@@ -114,7 +114,9 @@ python -m build
 python -m twine check dist/*
 python scripts/verify_distribution.py dist
 ```
+## Issues
 
+Report problems: https://github.com/Beca-Filip/mujoco-biomechanics/issues
 
 ## License
 

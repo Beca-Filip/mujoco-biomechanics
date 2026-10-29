@@ -41,10 +41,13 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/Beca-Filip/mujoco-biomechanics"
 Repository = "https://github.com/Beca-Filip/mujoco-biomechanics"
+Issues = "https://github.com/Beca-Filip/mujoco-biomechanics/issues"
+
 [project.scripts]
 mjb-generate = "mujoco_biomechanics.generate_human_model:main"
 mjb-inspect = "mujoco_biomechanics.mjinspect:main"
 mjb-run-scene = "mujoco_biomechanics.run_model:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 [tool.setuptools.package-data]
