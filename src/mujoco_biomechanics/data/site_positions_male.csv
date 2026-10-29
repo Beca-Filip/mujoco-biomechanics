@@ -15,13 +15,11 @@ tenth_rib_right,0.033,-0.031,0.147,abdomen
 tenth_rib_left,0.033,-0.031,-0.147,abdomen
 iliocristale_right,0.02,-0.08,0.157,abdomen
 iliocristale_left,0.02,-0.08,-0.157,abdomen
-anterior_superior_iliac_spine_right,0.069,-0.179,0.112,abdomen
-anterior_superior_iliac_spine_left,0.069,-0.179,-0.112,abdomen
 lumbar_joint_centre,0,-0.151,0,abdomen
 centre_of_mass_abdomen,0.026,-0.055,0,abdomen
 midpoint_between_postero_superior_iliac_spines,-0.102,0.007,0,pelvis
-antero_superior_iliac_spine_right,0.078,0.007,0.112,pelvis
-antero_superior_iliac_spine_left,0.078,0.007,-0.112,pelvis
+anterior_superior_iliac_spine_right,0.078,0.007,0.112,pelvis
+anterior_superior_iliac_spine_left,0.078,0.007,-0.112,pelvis
 symphision,0.123,-0.067,0,pelvis
 hip_joint_centre_right,0.056,-0.075,0.081,pelvis
 hip_joint_centre_left,0.056,-0.075,-0.081,pelvis
