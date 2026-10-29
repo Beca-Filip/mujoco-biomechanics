@@ -32,8 +32,6 @@ def xml_output_path(filename: str | Path ) -> Path:
         raise ValueError("Filename must not be empty")
     if output_path.suffix.lower() != ".xml":
         raise ValueError("Filename must have .xml extension")
-    if output_path.suffix == "":
-        return output_path.with_suffix(".xml")
 
     return output_path
 
@@ -103,11 +101,6 @@ def generate_human_model(
     I12 = segment_masses * (lengths**2) * xy_inert_prod_float
     I13 = segment_masses * (lengths**2) * xz_inert_prod_float
     I23 = segment_masses * (lengths**2) * yz_inert_prod_float
-    # print(segment_masses)
-    # print(lengths)
-    # print(x_rad_gyr_sqr)
-    # print(I11)
-    # print(I33)
 
     # Create dicts
     lengths_dict = dict(zip(segments, lengths))
@@ -183,12 +176,6 @@ def generate_human_model(
     special_joint_pos_y_dict = dict(zip(special_joint_name, special_joint_pos_y))
     special_joint_pos_z_dict = dict(zip(special_joint_name, special_joint_pos_z))
 
-    # print("lengths ", lengths_dict)
-    # print("masses ", mass_dict)
-    # print("x ", site_x_dict)
-    # print("y ", site_y_dict)
-    # print("z ", site_z_dict)
-
     mujoco = ET.Element("mujoco", model=output_path.stem)
     visual = ET.SubElement(mujoco, "visual")
     ET.SubElement(visual, "map", force="0.1", zfar="30")
@@ -207,8 +194,6 @@ def generate_human_model(
     thorax = ET.SubElement(worldbody, "body", name="thorax", pos=f"0 0 {thorax_gen_height}", euler="90 0 0")
     ET.SubElement(thorax, "joint", type="free", pos="0 0 0")
     ET.SubElement(thorax, "geom", type="box", size=f"{lengths_dict['Thorax']/4} {lengths_dict['Thorax']/2} {widths_dict['Thorax']/2}", pos=f"0 -{lengths_dict['Thorax']/2} 0", euler="0 0 0", rgba=rgba_in)
-    #ET.SubElement(thorax, "geom", type="capsule", size=f"{lengths_dict['Thorax']/4} {widths_dict['Thorax']/2-lengths_dict['Thorax']/4}", pos=f"0 -{lengths_dict['Thorax']/4} 0", euler="0 0 0", rgba=rgba_in)
-    #ET.SubElement(thorax, "geom", type="capsule", size=f"{lengths_dict['Thorax']/4} {widths_dict['Thorax']/2-lengths_dict['Thorax']/4}", pos=f"0 -{lengths_dict['Thorax']*3/4} 0", euler="0 0 0", rgba=rgba_in)
     ET.SubElement(thorax, "inertial", mass=f"{mass_dict['Thorax']}", pos=f"{com_pos_x_dict['Thorax']} {com_pos_y_dict['Thorax']} {com_pos_z_dict['Thorax']}", fullinertia=f"{I11_dict['Thorax']} {I22_dict['Thorax']} {I33_dict['Thorax']} {I12_dict['Thorax']} {I13_dict['Thorax']} {I23_dict['Thorax']}")
 
     # Head
@@ -396,12 +381,6 @@ def generate_human_model(
     for site in site_names:
         specific_body_part = site_specific_dict[site]
         ET.SubElement(variable_name_dict[specific_body_part], "site", name=site, pos=f"{site_x_dict[site]} {site_y_dict[site]} {site_z_dict[site]}", size="0.02", rgba="1 0 0 1")
-
-    # TODO: Limit joints
-    # TODO: How to determine segment widths? Should we also scale by width?
-    # TODO: How does collision work for overlapping segments?
-    # TODO: Add mass etc...
-    # TODO: Potential issue with thigh body position in relation to pelvis
 
     # Save to file
     tree = ET.ElementTree(mujoco)
