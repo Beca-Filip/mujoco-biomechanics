@@ -20,7 +20,7 @@ def verify_wheel(path: Path) -> None:
     missing = [
         name
         for name in EXPECTED_CSV
-        if f"mujoco_human_model/data/{name}" not in names
+        if f"mujoco_biomechanics/data/{name}" not in names
     ]
     if missing:
         raise SystemExit(f"{path.name}: missing CSV files: {missing}")
@@ -33,7 +33,7 @@ def verify_sdist(path: Path) -> None:
     missing = [
         name
         for name in EXPECTED_CSV
-        if not any(item.endswith(f"/src/mujoco_human_model/data/{name}") for item in names)
+        if not any(item.endswith(f"/src/mujoco_biomechanics/data/{name}") for item in names)
     ]
     if missing:
         raise SystemExit(f"{path.name}: missing CSV files: {missing}")
