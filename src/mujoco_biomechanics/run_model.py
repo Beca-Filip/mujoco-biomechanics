@@ -114,7 +114,7 @@ def set_joint_qpos(model: mujoco.MjModel, data: mujoco.MjData, joint_name: str, 
 def scene_viewer(combined_xml: str, model_count: int, shoulder_angle: float, paused: bool, cam_azimuth: float, cam_elevation: float, cam_distance_scale: float) -> None:
 
     if sys.platform == "darwin":
-        print("macOS note: MuJoCo launch_passive must be started through ""mjpython. Use: mjpython -m mujoco_human_model.run_model ...",file=sys.stderr)
+        print("macOS note: MuJoCo launch_passive must be started through ""mjpython. Use: mjpython -m mujoco_biomechanics.run_model ...",file=sys.stderr)
     
     model = mujoco.MjModel.from_xml_string(combined_xml)
     data = mujoco.MjData(model)
