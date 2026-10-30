@@ -90,9 +90,11 @@ def generate_human_model(
     xz_inert_prod_float = xz_inert_prod_sqr.apply(lambda x: x.real)
     yz_inert_prod_float = yz_inert_prod_sqr.apply(lambda x: x.real)
 
-    # Calculate segment masses based on mass percentage and total user mass
-    segment_masses = (segment_mass_percentages / 100) * float(mass)
-    #print(segment_masses)
+    # Normalize rounded percentages, counting each bilateral segment twice.
+    bilateral_segments = {"Foot", "Shank", "Thigh", "Hand", "Forearm", "Upper Arm"}
+    segment_counts = segments.map(lambda segment: 2 if segment in bilateral_segments else 1)
+    total_mass_percentage = (segment_mass_percentages * segment_counts).sum()
+    segment_masses = (segment_mass_percentages / total_mass_percentage) * float(mass)
 
     # fullinertia elements
     I11 = segment_masses * (lengths**2) * x_rad_gyr_sqr
