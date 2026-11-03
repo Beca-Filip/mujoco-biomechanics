@@ -12,9 +12,9 @@ ANTHROPOMETRIC_TABLE = {
     "male": "anthropometric_table_male.csv",
     "female": "anthropometric_table_female.csv",
 }
-SHOULDER_HIP_TABLE = {
-    "male": "male_shoulder_hip.csv",
-    "female": "female_shoulder_hip.csv",
+SHOULDER_HIP_FOOT_TABLE = {
+    "male": "male_shoulder_hip_foot.csv",
+    "female": "female_shoulder_hip_foot.csv",
 }
 SITE_POSITION_TABLE = {
     "male": "site_positions_male.csv",
@@ -167,8 +167,8 @@ def generate_human_model(
     site_y_dict = dict(zip(site_names, site_y))
     site_z_dict = dict(zip(site_names, site_z))
 
-    # Shoulder and hip joint positions loading and dicts
-    df = load_csv_data(SHOULDER_HIP_TABLE[sex])
+    # Shoulder/hip offsets and signed right-foot reference positions.
+    df = load_csv_data(SHOULDER_HIP_FOOT_TABLE[sex])
     special_joint_name = df.iloc[:, 0]
     special_joint_pos_x = df.iloc[:, 1] * length_scaling
     special_joint_pos_y = df.iloc[:, 2] * length_scaling
@@ -177,6 +177,22 @@ def generate_human_model(
     special_joint_pos_x_dict = dict(zip(special_joint_name, special_joint_pos_x))
     special_joint_pos_y_dict = dict(zip(special_joint_name, special_joint_pos_y))
     special_joint_pos_z_dict = dict(zip(special_joint_name, special_joint_pos_z))
+
+    # Derive primitive bounds from landmarks; the ankle is the local origin.
+    foot_start_x = special_joint_pos_x_dict['right_calcaneus']
+    foot_heel_center_x = foot_start_x / 2
+    foot_split_x = (special_joint_pos_x_dict['right_first_metatarsal_head'] + special_joint_pos_x_dict['right_fifth_metatarsal_head']) / 2
+    foot_end_x = special_joint_pos_x_dict['right_second_toe_tip']
+    foot_half_width = (special_joint_pos_z_dict['right_fifth_metatarsal_head'] - special_joint_pos_z_dict['right_first_metatarsal_head']) / 2
+    foot_center_z = (special_joint_pos_z_dict['right_first_metatarsal_head'] + special_joint_pos_z_dict['right_fifth_metatarsal_head']) / 2
+    foot_toes_start_x = min(special_joint_pos_x_dict['right_first_metatarsal_head'], special_joint_pos_x_dict['right_fifth_metatarsal_head'])
+    foot_metatarsal_half_span = abs(special_joint_pos_x_dict['right_first_metatarsal_head'] - special_joint_pos_x_dict['right_fifth_metatarsal_head']) / 2
+    foot_heel_z = special_joint_pos_z_dict['right_calcaneus']
+    foot_toe_z = special_joint_pos_z_dict['right_second_toe_tip']
+    foot_half_height = widths_dict['Foot'] / 2
+    foot_sole_y = -foot_half_height
+    foot_toes_center_y = foot_sole_y / 2
+    foot_toes_half_height = -foot_sole_y / 2
 
     mujoco = ET.Element("mujoco", model=output_path.stem)
     visual = ET.SubElement(mujoco, "visual")
@@ -190,7 +206,7 @@ def generate_human_model(
     ET.SubElement(mujoco, "option", gravity="0 0 -9.81")
 
     # Calculate thorax generation height, abdomen length is not factored in as hip joint position is given from the start of the abdomen segment
-    thorax_gen_height = widths_dict["Foot"]/2 + lengths_dict["Shank"] + lengths_dict["Thigh"] + special_joint_pos_y_dict['Hip'] + lengths_dict['Abdomen'] + lengths_dict['Thorax']
+    thorax_gen_height = widths_dict["Foot"]/2 + lengths_dict["Shank"] + lengths_dict["Thigh"] + special_joint_pos_y_dict['right_hip_joint_centre'] + lengths_dict['Abdomen'] + lengths_dict['Thorax']
 
     # Thorax as root segment
     thorax = ET.SubElement(worldbody, "body", name="thorax", pos=f"0 0 {thorax_gen_height}", euler="90 0 0")
@@ -226,7 +242,7 @@ def generate_human_model(
     ET.SubElement(pelvis, "inertial", mass=f"{mass_dict['Pelvis']}", pos=f"{com_pos_x_dict['Pelvis']} {com_pos_y_dict['Pelvis']} {com_pos_z_dict['Pelvis']}", fullinertia=f"{I11_dict['Pelvis']} {I22_dict['Pelvis']} {I33_dict['Pelvis']} {I12_dict['Pelvis']} {I13_dict['Pelvis']} {I23_dict['Pelvis']}")
 
     # Left thigh
-    left_thigh = ET.SubElement(pelvis, "body", name="left_thigh", pos=f"{special_joint_pos_x_dict['Hip']} {-special_joint_pos_y_dict['Hip']} {-special_joint_pos_z_dict['Hip']}")
+    left_thigh = ET.SubElement(pelvis, "body", name="left_thigh", pos=f"{special_joint_pos_x_dict['right_hip_joint_centre']} {-special_joint_pos_y_dict['right_hip_joint_centre']} {-special_joint_pos_z_dict['right_hip_joint_centre']}")
     ET.SubElement(contact, "exclude", body1="pelvis", body2="left_thigh")
     ET.SubElement(left_thigh, "joint", name="left_hip_x", type="hinge", axis="1 0 0", pos="0 0 0", range=f"{-joint_limit_negative_x_dict['Thigh']} {joint_limit_positive_x_dict['Thigh']}")
     ET.SubElement(left_thigh, "joint", name="left_hip_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Thigh']} {joint_limit_positive_y_dict['Thigh']}")
@@ -235,7 +251,7 @@ def generate_human_model(
     ET.SubElement(left_thigh, "inertial", mass=f"{mass_dict['Thigh']}", pos=f"{com_pos_x_dict['Thigh']} {com_pos_y_dict['Thigh']} {-com_pos_z_dict['Thigh']}", fullinertia=f"{I11_dict['Thigh']} {I22_dict['Thigh']} {I33_dict['Thigh']} {I12_dict['Thigh']} {-I13_dict['Thigh']} {-I23_dict['Thigh']}")
 
     # Right thigh
-    right_thigh = ET.SubElement(pelvis, "body", name="right_thigh", pos=f"{special_joint_pos_x_dict['Hip']} {-special_joint_pos_y_dict['Hip']} {special_joint_pos_z_dict['Hip']}")
+    right_thigh = ET.SubElement(pelvis, "body", name="right_thigh", pos=f"{special_joint_pos_x_dict['right_hip_joint_centre']} {-special_joint_pos_y_dict['right_hip_joint_centre']} {special_joint_pos_z_dict['right_hip_joint_centre']}")
     ET.SubElement(contact, "exclude", body1="pelvis", body2="right_thigh")
     ET.SubElement(right_thigh, "joint", name="right_hip_x", type="hinge", axis="1 0 0", pos="0 0 0", range=f"{-joint_limit_positive_x_dict['Thigh']} {joint_limit_negative_x_dict['Thigh']}")
     ET.SubElement(right_thigh, "joint", name="right_hip_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Thigh']} {joint_limit_positive_y_dict['Thigh']}")
@@ -262,7 +278,10 @@ def generate_human_model(
     ET.SubElement(contact, "exclude", body1="left_shank", body2="left_foot")
     ET.SubElement(left_foot, "joint", name="left_ankle_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Foot']} {joint_limit_positive_y_dict['Foot']}")
     ET.SubElement(left_foot, "joint", name="left_ankle_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Foot']} {joint_limit_positive_z_dict['Foot']}")
-    ET.SubElement(left_foot, "geom", type="box", size=f"{lengths_dict['Foot']/2+widths_dict['Foot']/4} {widths_dict['Foot']/2} {widths_dict['Foot']/2}", pos = f"{lengths_dict['Foot']/2} 0 0", euler="0 0 0", rgba=rgba_in, solref="0.02 1", solimp="0.85 0.95 0.005")
+    ET.SubElement(left_foot, "geom", name="left_foot_heel", type="ellipsoid", size=f"{-foot_start_x/2} {foot_half_height} {widths_dict['Foot']/2}", pos=f"{foot_heel_center_x} 0 {-foot_heel_z}", rgba=rgba_in, solref="0.02 1", solimp="0.85 0.95 0.005", priority="1")
+    ET.SubElement(left_foot, "geom", name="left_foot_main", type="box", size=f"{(foot_split_x-foot_heel_center_x)/2} {foot_half_height} {foot_half_width}", pos=f"{(foot_heel_center_x+foot_split_x)/2} 0 {-foot_center_z}", rgba=rgba_in, solref="0.02 1", solimp="0.85 0.95 0.005", priority="1")
+    ET.SubElement(left_foot, "geom", name="left_foot_forefoot", type="ellipsoid", size=f"{foot_metatarsal_half_span} {foot_half_height} {foot_half_width}", pos=f"{foot_split_x} 0 {-foot_center_z}", rgba=rgba_in, solref="0.02 1", solimp="0.85 0.95 0.005", priority="1")
+    ET.SubElement(left_foot, "geom", name="left_foot_toes", type="ellipsoid", size=f"{(foot_end_x-foot_toes_start_x)/2} {foot_toes_half_height} {foot_half_width}", pos=f"{(foot_toes_start_x+foot_end_x)/2} {foot_toes_center_y} {-foot_toe_z}", rgba=rgba_in, solref="0.025 1", solimp="0.85 0.95 0.005", priority="1")
     ET.SubElement(left_foot, "inertial", mass=f"{mass_dict['Foot']}", pos=f"{com_pos_x_dict['Foot']} {com_pos_y_dict['Foot']} {-com_pos_z_dict['Foot']}", fullinertia=f"{I11_dict['Foot']} {I22_dict['Foot']} {I33_dict['Foot']} {I12_dict['Foot']} {-I13_dict['Foot']} {-I23_dict['Foot']}")
 
     # Right foot
@@ -270,11 +289,14 @@ def generate_human_model(
     ET.SubElement(contact, "exclude", body1="right_shank", body2="right_foot")
     ET.SubElement(right_foot, "joint", name="right_ankle_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Foot']} {joint_limit_positive_y_dict['Foot']}")
     ET.SubElement(right_foot, "joint", name="right_ankle_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Foot']} {joint_limit_positive_z_dict['Foot']}")
-    ET.SubElement(right_foot, "geom", type="box", size=f"{lengths_dict['Foot']/2+widths_dict['Foot']/4} {widths_dict['Foot']/2} {widths_dict['Foot']/2}", pos = f"{lengths_dict['Foot']/2} 0 0", euler="0 0 0", rgba=rgba_in, solref="0.02 1", solimp="0.85 0.95 0.005")
+    ET.SubElement(right_foot, "geom", name="right_foot_heel", type="ellipsoid", size=f"{-foot_start_x/2} {foot_half_height} {widths_dict['Foot']/2}", pos=f"{foot_heel_center_x} 0 {foot_heel_z}", rgba=rgba_in, solref="0.02 1", solimp="0.85 0.95 0.005", priority="1")
+    ET.SubElement(right_foot, "geom", name="right_foot_main", type="box", size=f"{(foot_split_x-foot_heel_center_x)/2} {foot_half_height} {foot_half_width}", pos=f"{(foot_heel_center_x+foot_split_x)/2} 0 {foot_center_z}", rgba=rgba_in, solref="0.02 1", solimp="0.85 0.95 0.005", priority="1")
+    ET.SubElement(right_foot, "geom", name="right_foot_forefoot", type="ellipsoid", size=f"{foot_metatarsal_half_span} {foot_half_height} {foot_half_width}", pos=f"{foot_split_x} 0 {foot_center_z}", rgba=rgba_in, solref="0.02 1", solimp="0.85 0.95 0.005", priority="1")
+    ET.SubElement(right_foot, "geom", name="right_foot_toes", type="ellipsoid", size=f"{(foot_end_x-foot_toes_start_x)/2} {foot_toes_half_height} {foot_half_width}", pos=f"{(foot_toes_start_x+foot_end_x)/2} {foot_toes_center_y} {foot_toe_z}", rgba=rgba_in, solref="0.025 1", solimp="0.85 0.95 0.005", priority="1")
     ET.SubElement(right_foot, "inertial", mass=f"{mass_dict['Foot']}", pos=f"{com_pos_x_dict['Foot']} {com_pos_y_dict['Foot']} {com_pos_z_dict['Foot']}", fullinertia=f"{I11_dict['Foot']} {I22_dict['Foot']} {I33_dict['Foot']} {I12_dict['Foot']} {I13_dict['Foot']} {I23_dict['Foot']}")
 
     # Left upper arm
-    left_upper_arm = ET.SubElement(thorax, "body", name="left_upper_arm", pos=f"{special_joint_pos_x_dict['Shoulder']} {-special_joint_pos_y_dict['Shoulder']} {-special_joint_pos_z_dict['Shoulder']}")
+    left_upper_arm = ET.SubElement(thorax, "body", name="left_upper_arm", pos=f"{special_joint_pos_x_dict['right_shoulder_joint_centre']} {-special_joint_pos_y_dict['right_shoulder_joint_centre']} {-special_joint_pos_z_dict['right_shoulder_joint_centre']}")
     ET.SubElement(contact, "exclude", body1="thorax", body2="left_upper_arm")
     ET.SubElement(left_upper_arm, "joint", name="left_shoulder_x", type="hinge", axis="1 0 0", pos=f"0 0 0", range=f"{-joint_limit_negative_x_dict['Upper Arm']} {joint_limit_positive_x_dict['Upper Arm']}")
     ET.SubElement(left_upper_arm, "joint", name="left_shoulder_y", type="hinge", axis="0 1 0", pos=f"0 0 0", range=f"{-joint_limit_negative_y_dict['Upper Arm']} {joint_limit_positive_y_dict['Upper Arm']}")
@@ -283,7 +305,7 @@ def generate_human_model(
     ET.SubElement(left_upper_arm, "inertial", mass=f"{mass_dict['Upper Arm']}", pos=f"{com_pos_x_dict['Upper Arm']} {com_pos_y_dict['Upper Arm']} {-com_pos_z_dict['Upper Arm']}", fullinertia=f"{I11_dict['Upper Arm']} {I22_dict['Upper Arm']} {I33_dict['Upper Arm']} {I12_dict['Upper Arm']} {-I13_dict['Upper Arm']} {-I23_dict['Upper Arm']}")
 
     # Right upper arm
-    right_upper_arm = ET.SubElement(thorax, "body", name="right_upper_arm", pos=f"{special_joint_pos_x_dict['Shoulder']} {-special_joint_pos_y_dict['Shoulder']} {special_joint_pos_z_dict['Shoulder']}")
+    right_upper_arm = ET.SubElement(thorax, "body", name="right_upper_arm", pos=f"{special_joint_pos_x_dict['right_shoulder_joint_centre']} {-special_joint_pos_y_dict['right_shoulder_joint_centre']} {special_joint_pos_z_dict['right_shoulder_joint_centre']}")
     ET.SubElement(contact, "exclude", body1="thorax", body2="right_upper_arm")
     ET.SubElement(right_upper_arm, "joint", name="right_shoulder_x", type="hinge", axis="1 0 0", pos=f"0 0 0", range=f"{-joint_limit_positive_x_dict['Upper Arm']} {joint_limit_negative_x_dict['Upper Arm']}")
     ET.SubElement(right_upper_arm, "joint", name="right_shoulder_y", type="hinge", axis="0 1 0", pos=f"0 0 0", range=f"{-joint_limit_negative_y_dict['Upper Arm']} {joint_limit_positive_y_dict['Upper Arm']}")
