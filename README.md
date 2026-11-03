@@ -28,14 +28,14 @@ The generated model consists of 16 rigid bodies connected in a branching kinemat
 | 9 | `right_shank` | `right_thigh` | Hinge (1×) | 1 |
 | 10 | `right_foot` | `right_shank` | Hinge (2×) | 2 |
 | 11 | `left_upper_arm` | `thorax` | Hinge (3×) | 3 |
-| 12 | `left_forearm` | `left_upper_arm` | Hinge (1×) | 1 |
+| 12 | `left_forearm` | `left_upper_arm` | Hinge (2×) | 2 |
 | 13 | `left_hand` | `left_forearm` | Hinge (2×) | 2 |
 | 14 | `right_upper_arm` | `thorax` | Hinge (3×) | 3 |
-| 15 | `right_forearm` | `right_upper_arm` | Hinge (1×) | 1 |
+| 15 | `right_forearm` | `right_upper_arm` | Hinge (2×) | 2 |
 | 16 | `right_hand` | `right_forearm` | Hinge (2×) | 2 |
-| | **Total** | | | **33 + 6 = 39** |
+| | **Total** | | | **35 + 6 = 41** |
 
-The model has 33 internal rotational DOFs and 6 root DOFs (3 translations and 3 rotations). Each elbow and knee is a single hinge, while each shoulder uses three stacked hinges. The model is a rigid-body approximation and contains no muscles.
+The model has 35 internal rotational DOFs and 6 root DOFs (3 translations and 3 rotations). Each elbow uses two hinges for flexion/extension and forearm pronation/supination, each knee uses one hinge, and each shoulder uses three hinges. The model is a rigid-body approximation and contains no muscles.
 
 <!-- BEGIN GENERATED SITE TABLE -->
 ## Anatomical sites
