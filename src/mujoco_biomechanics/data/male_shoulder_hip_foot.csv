@@ -1,0 +1,7 @@
+site_name,x_coordinate,y_coordinate,z_coordinate
+right_shoulder_joint_centre,0.019,0.083,0.206
+right_hip_joint_centre,0,0.093,0.099328
+right_calcaneus,-0.046,-0.021,0.007
+right_first_metatarsal_head,0.146,-0.021,-0.047
+right_fifth_metatarsal_head,0.128,-0.021,0.060
+right_second_toe_tip,0.219,-0.009,-0.001
