@@ -7,8 +7,8 @@ from pathlib import Path
 EXPECTED_CSV = {
     "anthropometric_table_male.csv",
     "anthropometric_table_female.csv",
-    "male_shoulder_hip.csv",
-    "female_shoulder_hip.csv",
+    "male_shoulder_hip_foot.csv",
+    "female_shoulder_hip_foot.csv",
     "site_positions_male.csv",
     "site_positions_female.csv",
 }
