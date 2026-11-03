@@ -50,7 +50,7 @@ def test_default_standing_height_matches_input_height(model: mujoco.MjModel, hei
         upper_bounds.append(float(center_z + half_height))
 
     standing_height = max(upper_bounds) - min(lower_bounds)
-    assert standing_height == pytest.approx(height, rel=0, abs=0.03), (
+    assert standing_height == pytest.approx(height, rel=0, abs=0.01), (
         f"Default standing height is {standing_height:.6f} m; "
-        f"expected {height:.6f} m within 0.03 m"
+        f"expected {height:.6f} m within 0.01 m"
     )
