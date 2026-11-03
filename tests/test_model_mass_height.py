@@ -42,6 +42,8 @@ def test_default_standing_height_matches_input_height(model: mujoco.MjModel, hei
             half_height = size[0] + size[1] * abs(rotation[2, 2])
         elif geom_type == mujoco.mjtGeom.mjGEOM_BOX:
             half_height = np.abs(rotation[2]) @ size
+        elif geom_type == mujoco.mjtGeom.mjGEOM_ELLIPSOID:
+            half_height = np.linalg.norm(rotation[2] * size)
         else:
             pytest.fail(f"Height measurement does not support geom type {geom_type}")
 
