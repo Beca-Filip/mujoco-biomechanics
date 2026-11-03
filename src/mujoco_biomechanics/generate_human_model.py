@@ -295,6 +295,7 @@ def generate_human_model(
     left_forearm = ET.SubElement(left_upper_arm, "body", name="left_forearm", pos=f"0 {-lengths_dict['Upper Arm']} 0")
     ET.SubElement(contact, "exclude", body1="left_upper_arm", body2="left_forearm")
     ET.SubElement(left_forearm, "joint", name="left_elbow_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Forearm']} {joint_limit_positive_z_dict['Forearm']}")
+    ET.SubElement(left_forearm, "joint", name="left_elbow_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Forearm']} {joint_limit_positive_y_dict['Forearm']}")
     ET.SubElement(left_forearm, "geom", type="capsule", size=f"{widths_dict['Forearm']/2} {lengths_dict['Forearm']/2-widths_dict['Forearm']/4}", pos=f"0 {-lengths_dict['Forearm']/2} 0", euler="-90 0 0", rgba=rgba_in)
     ET.SubElement(left_forearm, "inertial", mass=f"{mass_dict['Forearm']}", pos=f"{com_pos_x_dict['Forearm']} {com_pos_y_dict['Forearm']} {-com_pos_z_dict['Forearm']}", fullinertia=f"{I11_dict['Forearm']} {I22_dict['Forearm']} {I33_dict['Forearm']} {I12_dict['Forearm']} {-I13_dict['Forearm']} {-I23_dict['Forearm']}")
 
@@ -302,13 +303,14 @@ def generate_human_model(
     right_forearm = ET.SubElement(right_upper_arm, "body", name="right_forearm", pos=f"0 {-lengths_dict['Upper Arm']} 0")
     ET.SubElement(contact, "exclude", body1="right_upper_arm", body2="right_forearm")
     ET.SubElement(right_forearm, "joint", name="right_elbow_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Forearm']} {joint_limit_positive_z_dict['Forearm']}")
+    ET.SubElement(right_forearm, "joint", name="right_elbow_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_positive_y_dict['Forearm']} {joint_limit_negative_y_dict['Forearm']}")
     ET.SubElement(right_forearm, "geom", type="capsule", size=f"{widths_dict['Forearm']/2} {lengths_dict['Forearm']/2-widths_dict['Forearm']/4}", pos=f"0 {-lengths_dict['Forearm']/2} 0", euler="-90 0 0", rgba=rgba_in)
     ET.SubElement(right_forearm, "inertial", mass=f"{mass_dict['Forearm']}", pos=f"{com_pos_x_dict['Forearm']} {com_pos_y_dict['Forearm']} {com_pos_z_dict['Forearm']}", fullinertia=f"{I11_dict['Forearm']} {I22_dict['Forearm']} {I33_dict['Forearm']} {I12_dict['Forearm']} {I13_dict['Forearm']} {I23_dict['Forearm']}")
 
     # Left hand
     left_hand = ET.SubElement(left_forearm, "body", name="left_hand", pos=f"0 {-lengths_dict['Forearm']} 0")
     ET.SubElement(contact, "exclude", body1="left_forearm", body2="left_hand")
-    ET.SubElement(left_hand, "joint", name="left_wrist_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Hand']} {joint_limit_positive_y_dict['Hand']}")
+    ET.SubElement(left_hand, "joint", name="left_wrist_x", type="hinge", axis="1 0 0", pos="0 0 0", range=f"{-joint_limit_negative_x_dict['Hand']} {joint_limit_positive_x_dict['Hand']}")
     ET.SubElement(left_hand, "joint", name="left_wrist_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Hand']} {joint_limit_positive_z_dict['Hand']}")
     ET.SubElement(left_hand, "geom", type="capsule", size=f"{widths_dict['Hand']/2} {lengths_dict['Hand']/2-widths_dict['Hand']/4}", pos=f"0 {-lengths_dict['Hand']/2} 0", euler="-90 0 0", rgba=rgba_in)
     ET.SubElement(left_hand, "inertial", mass=f"{mass_dict['Hand']}", pos=f"{com_pos_x_dict['Hand']} {com_pos_y_dict['Hand']} {-com_pos_z_dict['Hand']}", fullinertia=f"{I11_dict['Hand']} {I22_dict['Hand']} {I33_dict['Hand']} {I12_dict['Hand']} {-I13_dict['Hand']} {-I23_dict['Hand']}")
@@ -316,7 +318,7 @@ def generate_human_model(
     # Right hand
     right_hand = ET.SubElement(right_forearm, "body", name="right_hand", pos=f"0 {-lengths_dict['Forearm']} 0")
     ET.SubElement(contact, "exclude", body1="right_forearm", body2="right_hand")
-    ET.SubElement(right_hand, "joint", name="right_wrist_y", type="hinge", axis="0 1 0", pos="0 0 0", range=f"{-joint_limit_negative_y_dict['Hand']} {joint_limit_positive_y_dict['Hand']}")
+    ET.SubElement(right_hand, "joint", name="right_wrist_x", type="hinge", axis="1 0 0", pos="0 0 0", range=f"{-joint_limit_positive_x_dict['Hand']} {joint_limit_negative_x_dict['Hand']}")
     ET.SubElement(right_hand, "joint", name="right_wrist_z", type="hinge", axis="0 0 1", pos="0 0 0", range=f"{-joint_limit_negative_z_dict['Hand']} {joint_limit_positive_z_dict['Hand']}")
     ET.SubElement(right_hand, "geom", type="capsule", size=f"{widths_dict['Hand']/2} {lengths_dict['Hand']/2-widths_dict['Hand']/4}", pos=f"0 {-lengths_dict['Hand']/2} 0", euler="-90 0 0", rgba=rgba_in)
     ET.SubElement(right_hand, "inertial", mass=f"{mass_dict['Hand']}", pos=f"{com_pos_x_dict['Hand']} {com_pos_y_dict['Hand']} {com_pos_z_dict['Hand']}", fullinertia=f"{I11_dict['Hand']} {I22_dict['Hand']} {I33_dict['Hand']} {I12_dict['Hand']} {I13_dict['Hand']} {I23_dict['Hand']}")
@@ -334,10 +336,10 @@ def generate_human_model(
         0, #right shank
         0, 0, #right foot
         1.57079632679, 0, 0, #left upper arm
-        0, #left forearm
+        0, 0, #left forearm: elbow_z, elbow_y
         0, 0, #left hand
         -1.57079632679, 0, 0, #right upper arm
-        0, #right forearm
+        0, 0, #right forearm: elbow_z, elbow_y
         0, 0 #right hand
     ]
     qpos_vals_a_pose = [
@@ -352,10 +354,10 @@ def generate_human_model(
         0, #right shank
         0, 0, #right foot
         0.75, 0, 0, #left upper arm
-        0, #left forearm
+        0, 0, #left forearm: elbow_z, elbow_y
         0, 0, #left hand
         -0.75, 0, 0, #right upper arm
-        0, #right forearm
+        0, 0, #right forearm: elbow_z, elbow_y
         0, 0 #right hand
     ]
     keyframe = ET.SubElement(mujoco, "keyframe")
